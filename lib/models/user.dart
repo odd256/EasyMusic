@@ -46,24 +46,6 @@ class User with ChangeNotifier {
     notifyListeners();
   }
 
-  loginWithCode(httpManager, phone, code) async {
-    //使用验证码登录
-    try {
-      var data = await httpManager.get('/login/cellphone?phone=$phone&captcha=$code');
-      if (data['code'] == 200) {
-        User user = User.fromJson(data);
-        updateUser(user); //更新user信息
-        SpUtil.putObject('user', user);
-      } else {
-        if (data['message'] != null) {
-          MsgUtil.warn(data['message']);
-        }
-      }
-    } catch (e) {
-      MsgUtil.primary("登录失败");
-    }
-  }
-
   @override
   String toString() {
     return 'User{uname: $uname, id: $id, avatarUrl: $avatarUrl, cookie: $cookie, isLogin: $isLogin, backgroundUrl: $backgroundUrl}';
