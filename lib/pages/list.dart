@@ -27,6 +27,7 @@ class PlayListPage extends StatefulWidget {
 
 class _PlayListPageState extends State<PlayListPage> {
   List _songs = [];
+  List<AudioSource> _audioSources = [];
   late final HttpManager _httpManager;
 
   late final AudioPlayerManager _playerManager;
@@ -37,45 +38,56 @@ class _PlayListPageState extends State<PlayListPage> {
         '/playlist/detail?id=${widget.playList.id}&cookie=${context.read<User>().cookie}');
     if (data['code'] == 200) {
       setState(() {
-        _songs = data['playlist']['tracks'].map<Song>((e) {
+        _audioSources = data['playlist']['tracks'].map<AudioSource>((e) {
           final Album al = Album.fromJson(e['al']);
           final List<Artist> ar =
               e['ar'].map<Artist>((v) => Artist.fromJson(v)).toList();
+          Song song = Song.fromJson(e, ar, al);
+          return AudioSource.uri(
+              Uri.parse(
+                  'https://music.163.com/song/media/outer/url?id=${song.id}.mp3'),
+              tag: AudioMetadata(song: song));
+        }).toList();
+        _songs = data['playlist']['tracks'].map<Song>((e) {
+          final Album al = Album.fromJson(e['al']);
+          final List<Artist> ar =
+          e['ar'].map<Artist>((v) => Artist.fromJson(v)).toList();
           return Song.fromJson(e, ar, al);
         }).toList();
         print('_getPlayListSongs: $data');
       });
+
+      //将歌曲装入playlist中
+      var playlist = _playerManager.playList;
+      playlist.addAll(_audioSources);
     }
   }
 
   //播放歌曲
-  playMusic(Song song)async {
+  playMusic(index) async {
     //先根据id查歌曲url
-    var data = await _httpManager
-        .get('/song/url?id=${song.id}&cookie=${context.read<User>().cookie}');
-    if (data['code'] == 200) {
-      var d = data['data'][0];
-      print(d);
+    // var data = await _httpManager
+    //     .get('/song/url?id=${song.id}&cookie=${context.read<User>().cookie}');
+    // if (data['code'] == 200) {
+    //   var d = data['data'][0];
+    //   print(d);
       //查完信息开始播放
-      try {
-        var playlist = _playerManager.playList;
-        playlist.add(
-          AudioSource.uri(
-            Uri.parse(d['url']),
-            tag: AudioMetadata(song: song),
-          ),
-        );
-        // await _player.setUrl(data['url']);
-        print(playlist.length - 1);
-        if (playlist.length >= 0) {
-          _playerManager.audioPlayer
-              .seek(Duration.zero, index: playlist.length - 1);
-        }
-      } catch (e) {
-        print(e);
-        MsgUtil.warn('播放出错');
-      }
-    }
+    //   try {
+    //     var playlist = _playerManager.playList;
+    //     // await _player.setUrl(data['url']);
+    //     print(playlist.length - 1);
+    //     if (playlist.length >= 0) {
+    //       _playerManager.audioPlayer
+    //           .seek(Duration.zero, index: playlist.length - 1);
+    //     }
+    //   } catch (e) {
+    //     print(e);
+    //     MsgUtil.warn('播放出错');
+    //   }
+    // }
+    _playerManager.audioPlayer
+        .seek(Duration.zero, index: index);
+    _playerManager.audioPlayer.play();
   }
 
   @override
@@ -125,7 +137,7 @@ class _PlayListPageState extends State<PlayListPage> {
                 (c, i) => ListTile(
                       onTap: () {
                         //播放歌曲
-                        playMusic(_songs[i]);
+                        playMusic(i);
                       },
                       title: Text(
                         _songs[i].name,
