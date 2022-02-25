@@ -1,3 +1,4 @@
+//歌单
 class PlayList {
   num id;
   String coverImgUrl;

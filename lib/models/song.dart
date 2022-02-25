@@ -1,6 +1,5 @@
-//歌曲信息
 import 'package:flutter_music_player/models/album.dart';
-
+//歌曲
 class Song {
   num id=-1;
   String name='';

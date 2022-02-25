@@ -10,8 +10,6 @@ class HttpManager {
 
   factory HttpManager() => _instance;
 
-  static const codeSuccess = 200;
-
   //第一次使用初始化
   HttpManager._internal() {
     _dio ??= _init();

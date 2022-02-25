@@ -1,19 +1,15 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_music_player/models/album.dart';
 import 'package:flutter_music_player/models/artist.dart';
-import 'package:flutter_music_player/models/audio_metadata.dart';
 import 'package:flutter_music_player/models/play_list.dart';
 import 'package:flutter_music_player/models/song.dart';
 import 'package:flutter_music_player/models/user.dart';
 import 'package:flutter_music_player/pages/search.dart';
 import 'package:flutter_music_player/utils/audio_player_manager.dart';
 import 'package:flutter_music_player/utils/http_manager.dart';
-import 'package:flutter_music_player/utils/msg_util.dart';
 import 'package:flutter_music_player/widgets/bottom_player_bar.dart';
-import 'package:just_audio/just_audio.dart';
 import 'package:provider/provider.dart';
 
 class PlayListPage extends StatefulWidget {
@@ -26,8 +22,7 @@ class PlayListPage extends StatefulWidget {
 }
 
 class _PlayListPageState extends State<PlayListPage> {
-  List _songs = [];
-  List<AudioSource> _audioSources = [];
+  List<Song> _songs = [];
   late final HttpManager _httpManager;
 
   late final AudioPlayerManager _playerManager;
@@ -52,28 +47,13 @@ class _PlayListPageState extends State<PlayListPage> {
   }
 
   //播放歌曲
-  playMusic(index) async {
+  playMusic(i) async {
     print(firstPlay);
-    print(_playerManager.playList);
     if (firstPlay) {
-      //先清空playlist
-      await _playerManager.playList.clear();
-      //然后开始重新填充
-      _audioSources = _songs
-          .map<AudioSource>((e) => AudioSource.uri(
-              Uri.parse(
-                  'https://music.163.com/song/media/outer/url?id=${e.id}.mp3'),
-              tag: AudioMetadata(song: e)))
-          .toList();
-
-      //将歌曲装入playlist中
-      var playlist = _playerManager.playList;
-      playlist.addAll(_audioSources);
-
+      _playerManager.playlist = _songs;
       firstPlay = false;
     }
-    _playerManager.audioPlayer.seek(Duration.zero, index: index);
-    _playerManager.audioPlayer.play();
+    _playerManager.play(index:i);
   }
 
   @override

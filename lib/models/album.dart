@@ -1,3 +1,4 @@
+//专辑
 class Album {
   String name;
   num id;

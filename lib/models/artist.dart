@@ -1,3 +1,4 @@
+//艺术家
 class Artist {
   final num id;
   final String name;

@@ -41,7 +41,7 @@ class _BottomPlayerBarState extends State<BottomPlayerBar> {
           return Stack(
             alignment: AlignmentDirectional.centerStart,
             children: [
-              Container(
+              SizedBox(
                   height: 70,
                   width: 70,
                   child: sequence?.isEmpty ?? true
@@ -60,7 +60,7 @@ class _BottomPlayerBarState extends State<BottomPlayerBar> {
                       children: [
                         Text(
                           sequence?.isEmpty ?? true
-                              ? '———'
+                              ? ''
                               : metadata.song.name,
                           style: const TextStyle(
                               fontSize: 20, color: Colors.black),
@@ -71,7 +71,7 @@ class _BottomPlayerBarState extends State<BottomPlayerBar> {
                         ),
                         Text(
                           sequence?.isEmpty ?? true
-                              ? '———'
+                              ? ''
                               : metadata.song.showArtist(),
                           style: const TextStyle(color: Colors.black),
                           overflow: TextOverflow.ellipsis,
@@ -91,18 +91,18 @@ class _BottomPlayerBarState extends State<BottomPlayerBar> {
                         icon: const Icon(Icons.play_arrow),
                         onPressed: sequence?.isEmpty ?? true
                             ? null
-                            : _playerManager.audioPlayer.play,
+                            : _playerManager.play,
                       )
                     else if (processingState != ProcessingState.completed)
                       IconButton(
                         icon: const Icon(Icons.pause),
-                        onPressed: _playerManager.audioPlayer.pause,
+                        onPressed: _playerManager.pause,
                       )
                     else
                       IconButton(
                         icon: const Icon(Icons.replay),
                         onPressed: () =>
-                            _playerManager.audioPlayer.seek(Duration.zero),
+                            _playerManager.seek(Duration.zero),
                       ),
                     IconButton(
                         onPressed: () {}, icon: const Icon(Icons.view_list)),

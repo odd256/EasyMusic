@@ -131,6 +131,7 @@ class _LoginPageState extends State<LoginPage> {
               prefixIcon: Icon(Icons.phone_android), labelText: '手机号'),
           keyboardType: TextInputType.phone,
           controller: _phoneController,
+          autofocus: true,
         ),
         Container(
             margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -192,6 +193,7 @@ class _LoginPageState extends State<LoginPage> {
               prefixIcon: Icon(Icons.check_circle), labelText: '验证码'),
           keyboardType: TextInputType.number,
           controller: _codeController,
+          autofocus: true,
         ),
         Container(
             margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),

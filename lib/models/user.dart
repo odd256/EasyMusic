@@ -1,10 +1,6 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_music_player/utils/msg_util.dart';
-import 'package:sp_util/sp_util.dart';
-
-//用户信息
+//用户
 class User with ChangeNotifier {
   String uname = '---';
   num id = -1;
