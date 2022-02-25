@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_music_player/pages/music.dart';
 import 'package:flutter_music_player/utils/audio_player_manager.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:provider/provider.dart';
@@ -22,6 +23,13 @@ class _BottomPlayerBarState extends State<BottomPlayerBar> {
 
   @override
   Widget build(BuildContext context) {
+    onPressMusicBar(song) {
+      print(song);
+      // TODO: 进入音乐播放页面
+      Navigator.push(
+          context, MaterialPageRoute(builder: (_) => MusicPage(song)));
+    }
+
     return Consumer2<PlayerState, SequenceState?>(
       builder: (
         BuildContext context,
@@ -45,8 +53,7 @@ class _BottomPlayerBarState extends State<BottomPlayerBar> {
                         Icons.album,
                         size: 50,
                       )
-                    : CachedNetworkImage(
-                        imageUrl: metadata.song.album.picUrl)),
+                    : CachedNetworkImage(imageUrl: metadata.song.album.picUrl)),
             Positioned(
               left: 90,
               child: SizedBox(
@@ -55,11 +62,9 @@ class _BottomPlayerBarState extends State<BottomPlayerBar> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        sequence?.isEmpty ?? true
-                            ? ''
-                            : metadata.song.name,
-                        style: const TextStyle(
-                            fontSize: 20, color: Colors.black),
+                        sequence?.isEmpty ?? true ? '' : metadata.song.name,
+                        style:
+                            const TextStyle(fontSize: 20, color: Colors.black),
                         overflow: TextOverflow.ellipsis,
                       ),
                       const SizedBox(
@@ -77,7 +82,11 @@ class _BottomPlayerBarState extends State<BottomPlayerBar> {
             ),
             Material(
               type: MaterialType.transparency,
-              child: SizedBox(height: 70, child: InkWell(onTap: (){},)),
+              child: SizedBox(
+                  height: 70,
+                  child: InkWell(
+                    onTap: sequence?.isEmpty ?? true ? null : (){onPressMusicBar(metadata.song);},
+                  )),
             ),
             Positioned(
               right: 10,
@@ -101,11 +110,13 @@ class _BottomPlayerBarState extends State<BottomPlayerBar> {
                   else
                     IconButton(
                       icon: const Icon(Icons.replay),
-                      onPressed: () =>
-                          _playerManager.seek(Duration.zero),
+                      onPressed: () => _playerManager.seek(Duration.zero),
                     ),
                   IconButton(
-                      onPressed: () {}, icon: const Icon(Icons.view_list)),
+                      onPressed: () {
+                        // TODO: 在这里显示播放列表
+                      },
+                      icon: const Icon(Icons.view_list)),
                 ],
               ),
             ),
