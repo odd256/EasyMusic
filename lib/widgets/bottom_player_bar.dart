@@ -75,6 +75,10 @@ class _BottomPlayerBarState extends State<BottomPlayerBar> {
                     ],
                   )),
             ),
+            Material(
+              type: MaterialType.transparency,
+              child: SizedBox(height: 70, child: InkWell(onTap: (){},)),
+            ),
             Positioned(
               right: 10,
               child: Row(
@@ -105,10 +109,6 @@ class _BottomPlayerBarState extends State<BottomPlayerBar> {
                 ],
               ),
             ),
-            Material(
-              type: MaterialType.transparency,
-              child: SizedBox(height: 70, child: InkWell(onTap: (){},)),
-            )
           ],
         );
       },

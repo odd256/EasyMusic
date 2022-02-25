@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_music_player/models/album.dart';
@@ -27,12 +28,15 @@ class _PlayListPageState extends State<PlayListPage> {
 
   late final AudioPlayerManager _playerManager;
 
+  final _token = CancelToken();
+
   bool firstPlay = true; // 是否是第一次播放
 
   //获取歌单中的歌曲
   _getPlayListSongs() async {
     var data = await _httpManager.get(
-        '/playlist/detail?id=${widget.playList.id}&cookie=${context.read<User>().cookie}');
+        '/playlist/detail?id=${widget.playList.id}&cookie=${context.read<User>().cookie}',
+        cancelToken: _token);
     if (data['code'] == 200) {
       setState(() {
         _songs = data['playlist']['tracks'].map<Song>((e) {
@@ -51,7 +55,7 @@ class _PlayListPageState extends State<PlayListPage> {
       _playerManager.playlist = _songs;
       firstPlay = false;
     }
-    _playerManager.play(index:i);
+    _playerManager.play(index: i);
   }
 
   @override
@@ -96,38 +100,48 @@ class _PlayListPageState extends State<PlayListPage> {
                   errorWidget: (c, u, e) => const Icon(Icons.error)),
             ),
           ),
-          SliverPrototypeExtentList(
-            delegate: SliverChildBuilderDelegate(
-                (c, i) => ListTile(
-                      onTap: () {
-                        //播放歌曲
-                        playMusic(i);
-                      },
-                      title: Text(
-                        _songs[i].name,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      leading: Container(
-                        child: Center(
-                            child: Text(
-                          '${i + 1}',
-                          style: const TextStyle(fontSize: 18),
-                        )),
-                        height: 50,
-                        width: 50,
-                      ),
-                      subtitle: Text(_songs[i].showArtist()),
-                    ),
-                childCount: _songs.length),
-            prototypeItem: const ListTile(
-              title: Text(''),
-              subtitle: Text(''),
-              leading: Icon(Icons.print),
-            ),
-          )
+          _songs.isEmpty
+              ? const SliverToBoxAdapter(
+                  child: LinearProgressIndicator(),
+                )
+              : SliverPrototypeExtentList(
+                  delegate: SliverChildBuilderDelegate(
+                      (c, i) => ListTile(
+                            onTap: () {
+                              //播放歌曲
+                              playMusic(i);
+                            },
+                            title: Text(
+                              _songs[i].name,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            leading: Container(
+                              child: Center(
+                                  child: Text(
+                                '${i + 1}',
+                                style: const TextStyle(fontSize: 18),
+                              )),
+                              height: 50,
+                              width: 50,
+                            ),
+                            subtitle: Text(_songs[i].showArtist()),
+                          ),
+                      childCount: _songs.length),
+                  prototypeItem: const ListTile(
+                    title: Text(''),
+                    subtitle: Text(''),
+                    leading: Icon(Icons.print),
+                  ),
+                )
         ],
       ),
       bottomNavigationBar: const BottomPlayerBar(),
     );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _httpManager.cancelRequest(_token);
   }
 }

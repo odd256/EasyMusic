@@ -145,7 +145,7 @@ class _IndexPageState extends State<IndexPage> {
   _autoLogin() async {
     var user = SpUtil.getObject('user');
     if (user == null) return;
-    var data = await _httpManager.get('/login/status?cookie=${user['cookie']}');
+    var data = await _httpManager.get('/login/status?cookie=${user['cookie']}', withLoading: true);
     print(data);
     if (data['data']['code'] == 200) {
       User u = User.init(user['uname'], user['id'], user['avatarUrl'],
