@@ -55,6 +55,7 @@ class _IndexPageState extends State<IndexPage> {
         slivers: [
           SliverAppBar(
             pinned: true,
+            stretch: true,
             // 滑动到顶端时会固定住
             actions: [
               IconButton(
@@ -73,10 +74,14 @@ class _IndexPageState extends State<IndexPage> {
             flexibleSpace: FlexibleSpaceBar(
               centerTitle: true,
               title: onTop,
-              background: CachedNetworkImage(
-                  fit: BoxFit.cover,
-                  imageUrl: context.watch<User>().backgroundUrl,
-                  errorWidget: (c, u, e) => const Icon(Icons.error)),
+              background: context.watch<User>().isLogin
+                  ? CachedNetworkImage(
+                      fit: BoxFit.cover,
+                      imageUrl: context.watch<User>().backgroundUrl,
+                      errorWidget: (c, u, e) => const Icon(Icons.error))
+                  : Container(
+                      color: Colors.white,
+                    ),
             ),
           ),
           SliverPrototypeExtentList(

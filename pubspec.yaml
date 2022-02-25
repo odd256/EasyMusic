@@ -35,17 +35,18 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
 
-#  audioplayers: ^0.20.1 #播放音乐
-#  audio_service: ^0.18.3 #播放音乐
+  #  audioplayers: ^0.20.1 #播放音乐
+  #  audio_service: ^0.18.3 #播放音乐
   audio_session: ^0.1.6+1
   just_audio: ^0.9.19
-  dio: ^4.0.4 #网络请求
-  fluttertoast: ^8.0.9 #弹窗
-  flutter_easyloading: ^3.0.3 #loading
-  provider: ^6.0.2 #状态管理
-  sp_util: ^2.0.3 #持久化
-  flutter_screenutil: ^5.1.1 #屏幕适配
-  cached_network_image: ^3.2.0 #图片缓存
+  dio: ^4.0.4 # 网络请求
+  fluttertoast: ^8.0.9 # 弹窗
+  flutter_easyloading: ^3.0.3 # loading
+  provider: ^6.0.2 # 状态管理
+  sp_util: ^2.0.3 # 持久化
+  flutter_screenutil: ^5.1.1 # 屏幕适配
+  cached_network_image: ^3.2.0 # 图片缓存
+#  palette_generator: ^0.3.3 # 取色工具
 
 dev_dependencies:
   flutter_test:

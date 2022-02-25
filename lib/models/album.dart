@@ -1,8 +1,8 @@
 //专辑
 class Album {
-  String name;
+  String? name;
   num id;
-  String picUrl;
+  String? picUrl;
 
   Album.fromJson(json)
       : name = json['name'],

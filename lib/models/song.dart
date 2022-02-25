@@ -1,9 +1,10 @@
 import 'package:flutter_music_player/models/album.dart';
+import 'package:flutter_music_player/models/artist.dart';
 //歌曲
 class Song {
   num id=-1;
   String name='';
-  List artist=[];
+  List<Artist> artist=[];
   Album? album;
 
   Song(this.name, this.id, this.artist, this.album);

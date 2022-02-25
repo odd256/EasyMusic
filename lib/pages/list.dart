@@ -41,14 +41,12 @@ class _PlayListPageState extends State<PlayListPage> {
               e['ar'].map<Artist>((v) => Artist.fromJson(v)).toList();
           return Song.fromJson(e, ar, al);
         }).toList();
-        print('_getPlayListSongs: $data');
       });
     }
   }
 
   //播放歌曲
   playMusic(i) async {
-    print(firstPlay);
     if (firstPlay) {
       _playerManager.playlist = _songs;
       firstPlay = false;

@@ -1,11 +1,10 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_music_player/models/album.dart';
 import 'package:flutter_music_player/models/artist.dart';
 import 'package:flutter_music_player/models/song.dart';
 import 'package:flutter_music_player/utils/audio_player_manager.dart';
 import 'package:flutter_music_player/utils/http_manager.dart';
-import 'package:flutter_music_player/utils/msg_util.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:flutter_music_player/widgets/bottom_player_bar.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({Key? key}) : super(key: key);
@@ -15,20 +14,9 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
-  List _songs = [];
+  List<Song> _songs = [];
   final HttpManager _httpManager = HttpManager.getInstance();
-  final AudioPlayerManager _audioPlayerManager =
-      AudioPlayerManager.getInstance()!;
-
-  String _showAllArtist(artists) {
-    // 显示所有的艺术家
-    String content = "";
-    for (int i = 0; i < artists.length; i++) {
-      content += artists[i].name;
-      if (i != artists.length - 1) content += '/';
-    }
-    return content;
-  }
+  final AudioPlayerManager _playerManager = AudioPlayerManager.getInstance()!;
 
   _buildListView() {
     //每个列表显示
@@ -40,22 +28,20 @@ class _SearchPageState extends State<SearchPage> {
         return ListTile(
           onTap: () async {
             //点击播放音乐
-            // AudioPlayer audioPlayer = _audioPlayerManager.audioPlayer;
-            // print('/song/url?id=${_songs[i].id}');
-            // var res = await _req.get('/song/url?id=${_songs[i].id}');
-            // print(res.data['data']);
-            // if (res.data['data'][0]['code'] == 200) {
-            //   int result = await audioPlayer.play(res.data['data'][0]['url']);
-            //   if (result == 1) {
-            //     // 成功播放
-            //   }
-            // } else {
-            //   MsgUtil.warn('无法播放');
-            // }
+            //检查picUrl是否存在，不存在要获取
+            if (_songs[i].album?.picUrl == null) {
+              final ad = await _httpManager
+                  .get('/album?id=${_songs[i].album?.id}', withLoading: false);
+              if (ad['code'] == 200) {
+                _songs[i].album = Album.fromJson(ad['album']);
+              }
+            }
+            _playerManager.playlist.add(_songs[i]);
+            _playerManager.play(index: _playerManager.playlist.length - 1);
           },
           title: Text(_songs[i].name),
           // subtitle: Text(_songs[i].artist[0].name),
-          subtitle: Text(_showAllArtist(_songs[i].artist)),
+          subtitle: Text(_songs[i].showArtist()),
         );
       },
       itemCount: _songs.length,
@@ -72,19 +58,24 @@ class _SearchPageState extends State<SearchPage> {
           padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
           decoration: BoxDecoration(
               border: Border.all(color: Colors.grey, width: 1.0),
-              color: Colors.grey,
+              color: Colors.white,
               borderRadius: const BorderRadius.all(Radius.circular(20))),
           child: TextField(
             onSubmitted: (v) async {
               //发送网络请求，搜索歌曲
               var data = await _httpManager.get('/search?keywords=$v');
-              setState(() {
-                _songs = data['result']['songs'].map((e) {
-                  var artist =
-                      e['artists'].map((q) => Artist.fromJson(q)).toList();
-                  return Song.fromJson(e, artist, null);
+              if (data['code'] == 200) {
+                List<Song> s = data['result']['songs'].map<Song>((e) {
+                  List<Artist> artist = e['artists']
+                      .map<Artist>((q) => Artist.fromJson(q))
+                      .toList();
+                  Album album = Album.fromJson(e['album']);
+                  return Song.fromJson(e, artist, album);
                 }).toList();
-              });
+                setState(() {
+                  _songs = s;
+                });
+              }
             },
             autofocus: true,
             cursorColor: Colors.black,
@@ -104,6 +95,7 @@ class _SearchPageState extends State<SearchPage> {
         ),
       ),
       body: _buildListView(),
+      bottomNavigationBar: const BottomPlayerBar(),
     );
   }
 }
