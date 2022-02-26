@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_music_player/models/user.dart';
+import 'package:flutter_music_player/pages/index.dart';
 import 'package:flutter_music_player/utils/http_manager.dart';
 import 'package:flutter_music_player/utils/msg_util.dart';
 import 'package:sp_util/sp_util.dart';
@@ -80,8 +81,11 @@ class _LoginPageState extends State<LoginPage> {
         User user = User.fromJson(data);
         context.read<User>().updateUser(user); //更新user信息
         SpUtil.putObject('user', user);
-        Navigator.of(context).pop(); // 返回上一界面
-        Navigator.of(context).pop(); // 返回上一界面
+        //TODO: 这里有严重的内存泄露问题！
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (_) => const IndexPage()),
+            (route) => false);
+        // Navigator.of(context).popUntil((route) => route.settings.name == 'index');
       } else {
         if (data['message'] != null) {
           MsgUtil.warn(data['message']);
@@ -94,7 +98,6 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _timer = Timer(const Duration(milliseconds: 1000), () {});
   }
@@ -120,7 +123,7 @@ class _LoginPageState extends State<LoginPage> {
         Align(
           child: Container(
               margin: const EdgeInsets.only(left: 8),
-              child: const Text('目前仅支持手机登录，后续将开放更多的登录方式，主要是api的适配没有太多精力')),
+              child: const Text('目前仅支持手机登录，后续将开放更多的登录方式，主要是api的适配没有太多精力了~')),
           alignment: Alignment.topLeft,
         ),
         const SizedBox(
@@ -217,7 +220,6 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     _timer.cancel();
   }

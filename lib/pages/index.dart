@@ -15,6 +15,7 @@ import 'package:flutter_music_player/widgets/bottom_player_bar.dart';
 import 'package:sp_util/sp_util.dart';
 
 class IndexPage extends StatefulWidget {
+
   const IndexPage({Key? key}) : super(key: key);
 
   @override
@@ -24,7 +25,6 @@ class IndexPage extends StatefulWidget {
 class _IndexPageState extends State<IndexPage> {
   List _playList = [];
 
-  late num _id; //判断是否需要rebuild
 
   late HttpManager _httpManager;
 
@@ -141,27 +141,26 @@ class _IndexPageState extends State<IndexPage> {
     });
   }
 
-  //自动登录
-  _autoLogin() async {
-    var user = SpUtil.getObject('user');
-    if (user == null) return;
-    var data = await _httpManager.get('/login/status?cookie=${user['cookie']}', withLoading: true);
-    print(data);
-    if (data['data']['code'] == 200) {
-      User u = User.init(user['uname'], user['id'], user['avatarUrl'],
-          user['cookie'], user['isLogin'], user['backgroundUrl']);
-      print(u);
-      context.read<User>().updateUser(u);
-    } else {
-      MsgUtil.warn('请重新登录');
-    }
-  }
+  // //自动登录
+  // _autoLogin() async {
+  //   var user = SpUtil.getObject('user');
+  //   if (user == null) return;
+  //   var data = await _httpManager.get('/login/status?cookie=${user['cookie']}', withLoading: true);
+  //   print(data);
+  //   if (data['data']['code'] == 200) {
+  //     User u = User.init(user['uname'], user['id'], user['avatarUrl'],
+  //         user['cookie'], user['isLogin'], user['backgroundUrl']);
+  //     print(u);
+  //     context.read<User>().updateUser(u);
+  //   } else {
+  //     MsgUtil.warn('请重新登录');
+  //   }
+  // }
 
   @override
   void initState() {
     _httpManager = HttpManager.getInstance();
-    _id = context.read<User>().id;
-    _autoLogin();
+    // _autoLogin();
     super.initState();
   }
 
@@ -225,10 +224,7 @@ class _IndexPageState extends State<IndexPage> {
       ),
     );
     //用户歌单更新
-    if (u.id != _id) {
-      _getUserPlayList(u.id);
-      _id = u.id;
-    }
+    _getUserPlayList(u.id);
     return Scaffold(
       drawer: Drawer(
         backgroundColor: const Color(0xFFF5F5F5),
@@ -266,5 +262,10 @@ class _IndexPageState extends State<IndexPage> {
       body: _buildIndexPage(onTop),
       bottomNavigationBar: const BottomPlayerBar(),
     );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 }
