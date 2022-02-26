@@ -91,7 +91,7 @@ class _SplashPageState extends State<SplashPage> {
   _autoLogin() async {
     var user = SpUtil.getObject('user');
     if (user == null) {
-      MsgUtil.tip('请登录:)');
+      MsgUtil.tip(msg: '请登录:)');
       //重新定向至主页
       Navigator.of(context).pushReplacement(MaterialPageRoute(
           builder: (BuildContext context) => const IndexPage()));

@@ -24,7 +24,9 @@ class IndexPage extends StatefulWidget {
 class _IndexPageState extends State<IndexPage> {
   List _playList = [];
 
-  bool isFirstLoad = true;
+  bool isFirstLoad = true; // 是否是第一次加载
+
+  DateTime? _lastPressedAt; //上次点击时间
 
   late HttpManager _httpManager;
 
@@ -141,22 +143,6 @@ class _IndexPageState extends State<IndexPage> {
     });
   }
 
-  // //自动登录
-  // _autoLogin() async {
-  //   var user = SpUtil.getObject('user');
-  //   if (user == null) return;
-  //   var data = await _httpManager.get('/login/status?cookie=${user['cookie']}', withLoading: true);
-  //   print(data);
-  //   if (data['data']['code'] == 200) {
-  //     User u = User.init(user['uname'], user['id'], user['avatarUrl'],
-  //         user['cookie'], user['isLogin'], user['backgroundUrl']);
-  //     print(u);
-  //     context.read<User>().updateUser(u);
-  //   } else {
-  //     MsgUtil.warn('请重新登录');
-  //   }
-  // }
-
   @override
   void initState() {
     _httpManager = HttpManager.getInstance();
@@ -228,42 +214,55 @@ class _IndexPageState extends State<IndexPage> {
       _getUserPlayList(u.id);
       isFirstLoad = false;
     }
-    return Scaffold(
-      drawer: Drawer(
-        backgroundColor: const Color(0xFFF5F5F5),
-        child: ListView(
-          children: [
-            _buildListColumn([
-              _buildListTile('关于', Icons.announcement_rounded),
-              _buildListTile('设置', Icons.settings),
-              _buildListTile('账号', Icons.person_add_rounded, () {
-                if (!u.isLogin) {
-                  Navigator.push(context, MaterialPageRoute(builder: (c) {
-                    return const LoginPage();
-                  }));
-                }
-              }),
-              _buildListTile('登出', Icons.logout_rounded, () async {
-                Navigator.pop(context);
-                if (u.isLogin) {
-                  var data = await _httpManager.get('/logout');
-                  if (data['code'] == 200) {
-                    MsgUtil.primary('退出成功');
-                    //退出成功
-                    User u = User();
-                    context.read<User>().updateUser(u);
-                    SpUtil.remove('user');
+    return WillPopScope(
+      onWillPop: () async {
+        if (_lastPressedAt == null ||
+            DateTime.now().difference(_lastPressedAt!) >
+                const Duration(seconds: 1)) {
+          //间隔超过一秒重新计时
+          _lastPressedAt = DateTime.now();
+          MsgUtil.tip(msg: '再按一次退出应用');
+          return false;
+        }
+        return true;
+      },
+      child: Scaffold(
+        drawer: Drawer(
+          backgroundColor: const Color(0xFFF5F5F5),
+          child: ListView(
+            children: [
+              _buildListColumn([
+                _buildListTile('关于', Icons.announcement_rounded),
+                _buildListTile('设置', Icons.settings),
+                _buildListTile('账号', Icons.person_add_rounded, () {
+                  if (!u.isLogin) {
+                    Navigator.push(context, MaterialPageRoute(builder: (c) {
+                      return const LoginPage();
+                    }));
                   }
-                } else {
-                  MsgUtil.warn('你还没登陆呢');
-                }
-              }),
-            ]),
-          ],
+                }),
+                _buildListTile('登出', Icons.logout_rounded, () async {
+                  Navigator.pop(context);
+                  if (u.isLogin) {
+                    var data = await _httpManager.get('/logout');
+                    if (data['code'] == 200) {
+                      MsgUtil.primary('退出成功');
+                      //退出成功
+                      User u = User();
+                      context.read<User>().updateUser(u);
+                      SpUtil.remove('user');
+                    }
+                  } else {
+                    MsgUtil.warn('你还没登陆呢');
+                  }
+                }),
+              ]),
+            ],
+          ),
         ),
+        body: _buildIndexPage(onTop),
+        bottomNavigationBar: const BottomPlayerBar(),
       ),
-      body: _buildIndexPage(onTop),
-      bottomNavigationBar: const BottomPlayerBar(),
     );
   }
 

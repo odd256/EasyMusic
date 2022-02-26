@@ -1,3 +1,9 @@
+<!--
+ * @Creator: Odd
+ * @Date: 2022-02-05 03:56:00
+ * @LastEditTime: 2022-02-26 21:08:47
+ * @FilePath: \flutter_music_player\README.md
+-->
 # flutter_music_player
 Flutter NetEase（Flutter版网易云音乐）
 
@@ -6,11 +12,19 @@ Flutter NetEase（Flutter版网易云音乐）
 - [x] 登录
 - [x] 获取歌单
 - [x] 播放音乐
-## 计划实现
+## 计划实现（优先级从上往下递减）
 - [ ] 歌词页面
+- [ ] 支持上一首，下一首播放
+- [ ] 支持随机播放，列表循环，单曲循环
 - [ ] 调整部分UI，避免遮挡
+- [ ] 通知栏小组件
 - [ ] 使用screenUtil提高屏幕的兼容性
 - [ ] 对于不能播放的歌曲使用其他源播放
+- [ ] 图片背景支持修改
+- [ ] 添加黑屏音量键切歌功能
+## 已知问题
+1. 后台不稳定，有概率被杀
+2. 部分UI背景遮挡文字
 
 # 项目支持
 ## 网易云API
