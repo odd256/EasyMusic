@@ -15,7 +15,6 @@ import 'package:flutter_music_player/widgets/bottom_player_bar.dart';
 import 'package:sp_util/sp_util.dart';
 
 class IndexPage extends StatefulWidget {
-
   const IndexPage({Key? key}) : super(key: key);
 
   @override
@@ -25,6 +24,7 @@ class IndexPage extends StatefulWidget {
 class _IndexPageState extends State<IndexPage> {
   List _playList = [];
 
+  bool isFirstLoad = true;
 
   late HttpManager _httpManager;
 
@@ -224,7 +224,10 @@ class _IndexPageState extends State<IndexPage> {
       ),
     );
     //用户歌单更新
-    _getUserPlayList(u.id);
+    if (isFirstLoad) {
+      _getUserPlayList(u.id);
+      isFirstLoad = false;
+    }
     return Scaffold(
       drawer: Drawer(
         backgroundColor: const Color(0xFFF5F5F5),

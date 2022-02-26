@@ -24,7 +24,6 @@ class _BottomPlayerBarState extends State<BottomPlayerBar> {
   @override
   Widget build(BuildContext context) {
     onPressMusicBar(song) {
-      print(song);
       // TODO: 进入音乐播放页面
       Navigator.push(
           context, MaterialPageRoute(builder: (_) => MusicPage(song)));

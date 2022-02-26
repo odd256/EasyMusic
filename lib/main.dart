@@ -35,6 +35,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   late final AudioPlayerManager _playerManager;
+  bool isFirstLoad = true;
 
   @override
   void initState() {
@@ -44,6 +45,9 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+
+    print(context);
+
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => User()),

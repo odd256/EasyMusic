@@ -21,11 +21,19 @@ class _MusicPageState extends State<MusicPage> {
       alignment: Alignment.center,
       children: [
         CachedNetworkImage(
-            fit: BoxFit.fill,
+            fit: BoxFit.cover,
             height: double.infinity,
             width: double.infinity,
             imageUrl: '${widget.song.album?.picUrl}',
             errorWidget: (c, u, e) => const Icon(Icons.error)),
+        //防遮挡
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: Container(
+            height: 100,
+            color: Colors.black26,
+          ),
+        ),
         BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 40, sigmaY: 40),
           child: Container(
@@ -47,10 +55,11 @@ class _MusicPageState extends State<MusicPage> {
             onTap: () {
               // TODO: 打开歌词界面
             },
+
           ),
         ),
         const Align(
-            alignment: Alignment.bottomCenter, child: MusicPlayerController())
+            alignment: Alignment.bottomCenter, child: MusicPlayerController()),
       ],
     );
   }
