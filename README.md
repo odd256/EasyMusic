@@ -1,7 +1,7 @@
 <!--
  * @Creator: Odd
  * @Date: 2022-02-05 03:56:00
- * @LastEditTime: 2022-02-26 21:27:44
+ * @LastEditTime: 2022-02-26 21:29:10
  * @FilePath: \flutter_music_player\README.md
 -->
 # flutter_music_player

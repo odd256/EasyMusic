@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -26,9 +28,13 @@ class _IndexPageState extends State<IndexPage> {
 
   bool isFirstLoad = true; // 是否是第一次加载
 
+  bool showBlur = true; // 是否模糊背景
+
   DateTime? _lastPressedAt; //上次点击时间
 
-  late HttpManager _httpManager;
+  final ScrollController _controller = ScrollController(); // 滚动控制器
+
+  late HttpManager _httpManager; // http管理器
 
   AudioPlayerManager audioPlayerManager = AudioPlayerManager.getInstance()!;
 
@@ -54,6 +60,7 @@ class _IndexPageState extends State<IndexPage> {
 
   //显示歌单
   _buildIndexPage(onTop) => CustomScrollView(
+        controller: _controller,
         slivers: [
           SliverAppBar(
             pinned: true,
@@ -76,11 +83,24 @@ class _IndexPageState extends State<IndexPage> {
             flexibleSpace: FlexibleSpaceBar(
               centerTitle: true,
               title: onTop,
+              titlePadding: const EdgeInsets.all(0),
               background: context.watch<User>().isLogin
-                  ? CachedNetworkImage(
-                      fit: BoxFit.cover,
-                      imageUrl: context.watch<User>().backgroundUrl,
-                      errorWidget: (c, u, e) => const Icon(Icons.error))
+                  ? SizedBox(
+                      height: double.infinity,
+                      width: double.infinity,
+                      child: Stack(
+                        alignment: Alignment.bottomCenter,
+                        children: [
+                          CachedNetworkImage(
+                              fit: BoxFit.cover,
+                              height: double.infinity,
+                              width: double.infinity,
+                              imageUrl: context.watch<User>().backgroundUrl,
+                              errorWidget: (c, u, e) =>
+                                  const Icon(Icons.error)),
+                        ],
+                      ),
+                    )
                   : Container(
                       color: Colors.white,
                     ),
@@ -145,15 +165,32 @@ class _IndexPageState extends State<IndexPage> {
 
   @override
   void initState() {
-    _httpManager = HttpManager.getInstance();
-    // _autoLogin();
     super.initState();
+    _httpManager = HttpManager.getInstance();
+    _controller.addListener(() {
+      if (_controller.offset > 200) {
+        if(showBlur!=false){
+          setState(() {
+            showBlur = false;
+          });
+        }
+      }else{
+          if(showBlur != true){
+              setState(() {
+                  showBlur = true;
+              });
+          }
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     User u = context.watch<User>();
-    //用户信息头部
+    print(context);
+    ///显示用户的名称
+    ///显示用户的头像
+    ///显示用户的id
     var onTop = InkWell(
       onTap: () {
         if (u.isLogin) {
@@ -163,49 +200,57 @@ class _IndexPageState extends State<IndexPage> {
               context, CupertinoPageRoute(builder: (c) => const LoginPage()));
         }
       },
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 50),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            CircleAvatar(
-              radius: 15,
-              foregroundImage: u.isLogin ? NetworkImage(u.avatarUrl) : null,
-              child: u.isLogin
-                  ? null
-                  : const Text(
-                      '登录',
-                      style: TextStyle(fontSize: 11),
-                    ),
+      child: ClipRRect(
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+        child: BackdropFilter(
+          filter: showBlur
+              ? ImageFilter.blur(sigmaX: 30, sigmaY: 30)
+              : ImageFilter.blur(sigmaX: 0, sigmaY: 0),
+          child: Container(
+            padding: const EdgeInsets.fromLTRB(50, 0, 50, 8),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                CircleAvatar(
+                  radius: 15,
+                  foregroundImage: u.isLogin ? NetworkImage(u.avatarUrl) : null,
+                  child: u.isLogin
+                      ? null
+                      : const Text(
+                          '登录',
+                          style: TextStyle(fontSize: 11),
+                        ),
+                ),
+                Container(
+                  margin: const EdgeInsets.only(left: 8),
+                  height: 40,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        u.uname,
+                        style: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w400),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      Text(
+                        'id: ${u.id}',
+                        style: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 10,
+                            fontWeight: FontWeight.w300),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                )
+              ],
             ),
-            Container(
-              margin: const EdgeInsets.only(left: 8),
-              height: 40,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    u.uname,
-                    style: const TextStyle(
-                        color: Colors.black,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w400),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  Text(
-                    'id: ${u.id}',
-                    style: const TextStyle(
-                        color: Colors.black,
-                        fontSize: 10,
-                        fontWeight: FontWeight.w300),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
-              ),
-            )
-          ],
+          ),
         ),
       ),
     );
@@ -269,5 +314,6 @@ class _IndexPageState extends State<IndexPage> {
   @override
   void dispose() {
     super.dispose();
+    _controller.dispose();
   }
 }

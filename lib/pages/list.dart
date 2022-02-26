@@ -89,10 +89,13 @@ class _PlayListPageState extends State<PlayListPage> {
             expandedHeight: 250.0,
             flexibleSpace: FlexibleSpaceBar(
               centerTitle: true,
-              title: Text(
-                widget.playList.name,
-                style: const TextStyle(color: Colors.black),
-                overflow: TextOverflow.ellipsis,
+              title: Container(
+                margin: const EdgeInsets.symmetric(horizontal: 50),
+                child: Text(
+                  widget.playList.name,
+                  style: const TextStyle(color: Colors.black),
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
               background: CachedNetworkImage(
                   fit: BoxFit.cover,
