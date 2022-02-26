@@ -85,7 +85,7 @@ class _IndexPageState extends State<IndexPage> {
               centerTitle: true,
               title: onTop,
               titlePadding: const EdgeInsets.all(0),
-              stretchModes: const [StretchMode.zoomBackground, StretchMode.fadeTitle],
+              stretchModes: const [StretchMode.zoomBackground],
               background: context.watch<User>().isLogin
                   ? SizedBox(
                       height: double.infinity,
