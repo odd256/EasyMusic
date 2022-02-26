@@ -1,18 +1,24 @@
 <!--
  * @Creator: Odd
  * @Date: 2022-02-05 03:56:00
- * @LastEditTime: 2022-02-26 21:08:47
+ * @LastEditTime: 2022-02-26 21:27:44
  * @FilePath: \flutter_music_player\README.md
 -->
 # flutter_music_player
-Flutter NetEase（Flutter版网易云音乐）
+
+- Flutter NetEase（Flutter版网易云音乐）
+- 目前仅在移动Android端做适配，暂无其他平台适配计划
 
 # 项目进度
+
 ## 目前已经完成
+
 - [x] 登录
 - [x] 获取歌单
 - [x] 播放音乐
+
 ## 计划实现（优先级从上往下递减）
+
 - [ ] 歌词页面
 - [ ] 支持上一首，下一首播放
 - [ ] 支持随机播放，列表循环，单曲循环
@@ -22,14 +28,29 @@ Flutter NetEase（Flutter版网易云音乐）
 - [ ] 对于不能播放的歌曲使用其他源播放
 - [ ] 图片背景支持修改
 - [ ] 添加黑屏音量键切歌功能
+
 ## 已知问题
+
 1. 后台不稳定，有概率被杀
 2. 部分UI背景遮挡文字
 
+## 如何减少安装包大小？
+
+- 分别打包可以尽可能减少安装包大小  
+`flutter build apk --target-platform android-arm,android-arm64,android-x64 --split-per-abi`
+- 混淆可以增加逆向难度同时减少安装包大小  
+`flutter build apk --obfuscate --split-debug-info=xx`
+- 两个一起食用  
+`flutter build apk --obfuscate --split-debug-info=debugInfo --target-platform android-arm,android-arm64,android-x64 --split-per-abi`
+
 # 项目支持
+
 ## 网易云API
+
 - [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi)
+
 ## 开发使用的插件
+
 - audio_session: ^0.1.6+1 # 音频播放
 - just_audio: ^0.9.19 # 音频播放
 - dio: ^4.0.4 # 网络请求
