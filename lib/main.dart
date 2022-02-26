@@ -45,7 +45,6 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-
     print(context);
 
     return MultiProvider(
@@ -91,20 +90,24 @@ class _SplashPageState extends State<SplashPage> {
   //自动登录
   _autoLogin() async {
     var user = SpUtil.getObject('user');
-    if (user == null) return;
-    var data = await _httpManager.get('/login/status?cookie=${user['cookie']}');
-    print(data);
-    if (data['data']['code'] == 200) {
-      User u = User.init(user['uname'], user['id'], user['avatarUrl'],
-          user['cookie'], user['isLogin'], user['backgroundUrl']);
-      print(u);
-      context.read<User>().updateUser(u);
+    if (user == null) {
+      MsgUtil.tip('请登录:)');
       //重新定向至主页
       Navigator.of(context).pushReplacement(MaterialPageRoute(
           builder: (BuildContext context) => const IndexPage()));
+      return;
+    }
+    var data = await _httpManager.get('/login/status?cookie=${user['cookie']}');
+    if (data['data']['code'] == 200) {
+      User u = User.init(user['uname'], user['id'], user['avatarUrl'],
+          user['cookie'], user['isLogin'], user['backgroundUrl']);
+      context.read<User>().updateUser(u);
     } else {
       MsgUtil.warn('请重新登录');
     }
+    //重新定向至主页
+    Navigator.of(context).pushReplacement(MaterialPageRoute(
+        builder: (BuildContext context) => const IndexPage()));
   }
 
   @override

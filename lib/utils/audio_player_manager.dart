@@ -1,12 +1,13 @@
 /*
  * @Creator: Odd
  * @Date: 2022-02-05 09:43:28
- * @LastEditTime: 2022-02-16 17:49:02
- * @FilePath: \undefinede:\Projects\flutter_music_player\lib\utils\audio_player_manager.dart
+ * @LastEditTime: 2022-02-26 19:00:04
+ * @FilePath: \flutter_music_player\lib\utils\audio_player_manager.dart
  */
 import 'package:audio_session/audio_session.dart';
 import 'package:flutter_music_player/models/audio_metadata.dart';
 import 'package:flutter_music_player/models/song.dart';
+import 'package:flutter_music_player/utils/msg_util.dart';
 import 'package:just_audio/just_audio.dart';
 
 //单例模式
@@ -50,11 +51,16 @@ class AudioPlayerManager {
     if (index == null) return player?.play();
 
     AudioMetadata metadata = AudioMetadata(song: playlist[index]);
-    await player?.setAudioSource(AudioSource.uri(
-        Uri.parse(
-            "https://music.163.com/song/media/outer/url?id=${playlist[index].id}.mp3"),
-        tag: metadata));
-    await player?.play();
+    try {
+      await player?.setAudioSource(AudioSource.uri(
+          Uri.parse(
+              "https://music.163.com/song/media/outer/url?id=${playlist[index].id}.mp3"),
+          tag: metadata));
+      await player?.play();
+    } catch (e) {
+      MsgUtil.warn("播放失败，换一首吧");
+      await player?.stop();
+    }
   }
 
   pause() {
