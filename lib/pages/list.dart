@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
@@ -14,9 +16,12 @@ import 'package:flutter_music_player/widgets/bottom_player_bar.dart';
 import 'package:provider/provider.dart';
 
 class PlayListPage extends StatefulWidget {
+  final title;
+
   final PlayList playList;
 
-  const PlayListPage({Key? key, required this.playList}) : super(key: key);
+  const PlayListPage({Key? key, required this.playList, required this.title})
+      : super(key: key);
 
   @override
   _PlayListPageState createState() => _PlayListPageState();
@@ -31,6 +36,7 @@ class _PlayListPageState extends State<PlayListPage> {
   final _token = CancelToken();
 
   bool firstPlay = true; // 是否是第一次播放
+  bool showListInfo = false; // 是否显示歌单信息
 
   //获取歌单中的歌曲
   _getPlayListSongs() async {
@@ -70,10 +76,18 @@ class _PlayListPageState extends State<PlayListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: CustomScrollView(
+        physics: const BouncingScrollPhysics(),
         slivers: [
           SliverAppBar(
+            backgroundColor: Colors.white,
             pinned: true,
             // 滑动到顶端时会固定住
+            stretch: true,
+            title: Text(
+              widget.title,
+              style: const TextStyle(color: Colors.black),
+              overflow: TextOverflow.ellipsis,
+            ),
             actions: [
               IconButton(
                   onPressed: () {
@@ -86,22 +100,57 @@ class _PlayListPageState extends State<PlayListPage> {
                   },
                   icon: const Icon(Icons.search_rounded)),
             ],
-            expandedHeight: 250.0,
+            expandedHeight: 320.0,
             flexibleSpace: FlexibleSpaceBar(
-              centerTitle: true,
-              title: Container(
-                margin: const EdgeInsets.symmetric(horizontal: 50),
-                child: Text(
-                  widget.playList.name,
-                  style: const TextStyle(color: Colors.black),
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-              background: CachedNetworkImage(
-                  fit: BoxFit.cover,
-                  imageUrl: widget.playList.coverImgUrl,
-                  errorWidget: (c, u, e) => const Icon(Icons.error)),
-            ),
+                stretchModes: const [StretchMode.zoomBackground],
+                background: GestureDetector(
+                  onTapDown: (details) {
+                    if (!showListInfo) {
+                      setState(() {
+                        showListInfo = !showListInfo;
+                      });
+                    }
+                  },
+                  onTapUp: (details) {
+                    if (showListInfo) {
+                      setState(() {
+                        showListInfo = !showListInfo;
+                      });
+                    }
+                  },
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      //防遮挡
+                      Padding(
+                        padding: const EdgeInsets.only(top: 80.0),
+                        child: CachedNetworkImage(
+                            height: double.infinity,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                            imageUrl: widget.playList.coverImgUrl,
+                            errorWidget: (c, u, e) => const Icon(Icons.error)),
+                      ),
+                      BackdropFilter(
+                        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                        child: Container(),
+                      ),
+                      if (showListInfo) Card(
+                              elevation: 15,
+                              color: Colors.black.withOpacity(0.8),
+                              shape: const RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(14.0))),
+                              child: const SizedBox(
+                                height: 170,
+                                width: 300,
+                              )) else Material(
+                              type: MaterialType.transparency,
+                              child: Container(),
+                            )
+                    ],
+                  ),
+                )),
           ),
           _songs.isEmpty
               ? const SliverToBoxAdapter(

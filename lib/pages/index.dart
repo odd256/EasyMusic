@@ -61,6 +61,7 @@ class _IndexPageState extends State<IndexPage> {
   //显示歌单
   _buildIndexPage(onTop) => CustomScrollView(
         controller: _controller,
+        physics: const BouncingScrollPhysics(),
         slivers: [
           SliverAppBar(
             pinned: true,
@@ -84,22 +85,18 @@ class _IndexPageState extends State<IndexPage> {
               centerTitle: true,
               title: onTop,
               titlePadding: const EdgeInsets.all(0),
+              stretchModes: const [StretchMode.zoomBackground, StretchMode.fadeTitle],
               background: context.watch<User>().isLogin
                   ? SizedBox(
                       height: double.infinity,
                       width: double.infinity,
-                      child: Stack(
-                        alignment: Alignment.bottomCenter,
-                        children: [
-                          CachedNetworkImage(
-                              fit: BoxFit.cover,
-                              height: double.infinity,
-                              width: double.infinity,
-                              imageUrl: context.watch<User>().backgroundUrl,
-                              errorWidget: (c, u, e) =>
-                                  const Icon(Icons.error)),
-                        ],
-                      ),
+                      child: CachedNetworkImage(
+                          fit: BoxFit.cover,
+                          height: double.infinity,
+                          width: double.infinity,
+                          imageUrl: context.watch<User>().backgroundUrl,
+                          errorWidget: (c, u, e) =>
+                              const Icon(Icons.error)),
                     )
                   : Container(
                       color: Colors.white,
@@ -117,6 +114,7 @@ class _IndexPageState extends State<IndexPage> {
                               context,
                               CupertinoPageRoute(
                                   builder: (context) => PlayListPage(
+                                        title: '歌单详情',
                                         playList: _playList[i],
                                       )));
                         },
@@ -169,17 +167,17 @@ class _IndexPageState extends State<IndexPage> {
     _httpManager = HttpManager.getInstance();
     _controller.addListener(() {
       if (_controller.offset > 200) {
-        if(showBlur!=false){
+        if (showBlur != false) {
           setState(() {
             showBlur = false;
           });
         }
-      }else{
-          if(showBlur != true){
-              setState(() {
-                  showBlur = true;
-              });
-          }
+      } else {
+        if (showBlur != true) {
+          setState(() {
+            showBlur = true;
+          });
+        }
       }
     });
   }
@@ -188,6 +186,7 @@ class _IndexPageState extends State<IndexPage> {
   Widget build(BuildContext context) {
     User u = context.watch<User>();
     print(context);
+
     ///显示用户的名称
     ///显示用户的头像
     ///显示用户的id
