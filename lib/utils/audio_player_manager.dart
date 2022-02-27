@@ -1,7 +1,7 @@
 /*
  * @Creator: Odd
  * @Date: 2022-02-05 09:43:28
- * @LastEditTime: 2022-02-26 19:00:04
+ * @LastEditTime: 2022-02-27 20:36:59
  * @FilePath: \flutter_music_player\lib\utils\audio_player_manager.dart
  */
 import 'package:audio_session/audio_session.dart';
@@ -35,7 +35,7 @@ class AudioPlayerManager {
     AudioPlayer player = AudioPlayer();
     player.playbackEventStream.listen((event) {},
         onError: (Object e, StackTrace stackTrace) {
-      print('A stream error occurred: $e');
+      MsgUtil.warn('A stream error occurred: $e');
     });
     return player;
   }

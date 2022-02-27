@@ -46,6 +46,7 @@ dependencies:
   sp_util: ^2.0.3 # 持久化
   flutter_screenutil: ^5.1.1 # 屏幕适配
   cached_network_image: ^3.2.0 # 图片缓存
+  transparent_image: ^2.0.0 # 占位图
 #  palette_generator: ^0.3.3 # 取色工具
 
 dev_dependencies:

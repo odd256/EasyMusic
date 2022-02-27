@@ -1,3 +1,9 @@
+/*
+ * @Creator: Odd
+ * @Date: 2022-02-05 05:08:38
+ * @LastEditTime: 2022-02-27 20:37:58
+ * @FilePath: \flutter_music_player\lib\utils\http_manager.dart
+ */
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -30,6 +36,7 @@ class HttpManager {
       client.badCertificateCallback = (cert, host, port) {
         return true;
       };
+      return null;
     };
     //dio 配置
     dio.options.baseUrl = baseUrl ??

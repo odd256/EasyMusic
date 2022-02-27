@@ -13,6 +13,7 @@ import 'package:sp_util/sp_util.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  PaintingBinding.instance!.imageCache!.maximumSizeBytes = 1024 * 1024 * 300;
   await SpUtil.getInstance();
   if (Platform.isAndroid) {
     // 以下两行 设置android状态栏为透明的沉浸。
@@ -45,7 +46,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    print(context);
+    // print(context);
 
     return MultiProvider(
       providers: [

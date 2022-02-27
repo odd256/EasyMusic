@@ -1,3 +1,9 @@
+/*
+ * @Creator: Odd
+ * @Date: 2022-02-07 02:57:32
+ * @LastEditTime: 2022-02-27 20:23:41
+ * @FilePath: \flutter_music_player\lib\models\user.dart
+ */
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 //用户
@@ -21,6 +27,12 @@ class User with ChangeNotifier {
         cookie = json['cookie'],
         isLogin = true,
         backgroundUrl = json['profile']['backgroundUrl'];
+  
+  ///保存创建者信息
+  User.fromJson2(Map<String, dynamic> json)
+      : id = json['userId'],
+        uname = json['nickname'],
+        avatarUrl = json['avatarUrl'];
 
   Map<String, dynamic> toJson() => <String, dynamic>{
         'uname': uname,

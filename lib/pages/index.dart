@@ -15,6 +15,7 @@ import 'package:flutter_music_player/pages/login.dart';
 import 'package:flutter_music_player/pages/search.dart';
 import 'package:flutter_music_player/widgets/bottom_player_bar.dart';
 import 'package:sp_util/sp_util.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 class IndexPage extends StatefulWidget {
   const IndexPage({Key? key}) : super(key: key);
@@ -80,24 +81,19 @@ class _IndexPageState extends State<IndexPage> {
                 icon: const Icon(Icons.search_rounded),
               )
             ],
-            expandedHeight: 250.0,
+            expandedHeight: 300.0,
             flexibleSpace: FlexibleSpaceBar(
               centerTitle: true,
               title: onTop,
               titlePadding: const EdgeInsets.all(0),
               stretchModes: const [StretchMode.zoomBackground],
               background: context.watch<User>().isLogin
-                  ? SizedBox(
+                  ? FadeInImage.memoryNetwork(
+                      fit: BoxFit.cover,
                       height: double.infinity,
                       width: double.infinity,
-                      child: CachedNetworkImage(
-                          fit: BoxFit.cover,
-                          height: double.infinity,
-                          width: double.infinity,
-                          imageUrl: context.watch<User>().backgroundUrl,
-                          errorWidget: (c, u, e) =>
-                              const Icon(Icons.error)),
-                    )
+                      placeholder: kTransparentImage,
+                      image: context.watch<User>().backgroundUrl)
                   : Container(
                       color: Colors.white,
                     ),
@@ -123,17 +119,17 @@ class _IndexPageState extends State<IndexPage> {
                           overflow: TextOverflow.ellipsis,
                         ),
                         leading: CachedNetworkImage(
-                          width: 47,
+                          imageUrl: _playList[i].coverImgUrl,
+                          width: 55,
                           progressIndicatorBuilder: (c, u, d) =>
                               LinearProgressIndicator(value: d.progress),
-                          imageUrl: _playList[i].coverImgUrl,
                           errorWidget: (c, u, e) => const Icon(Icons.error),
                           imageBuilder: (context, imageProvider) => Container(
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
                               image: DecorationImage(
                                 image: imageProvider,
-                                fit: BoxFit.contain,
+                                fit: BoxFit.cover,
                               ),
                             ),
                           ),
@@ -156,7 +152,8 @@ class _IndexPageState extends State<IndexPage> {
     var data = await _httpManager.get('/user/playlist?uid=$id');
     setState(() {
       _playList = data['playlist'].map((e) {
-        return PlayList.fromJson(e);
+        User user = User.fromJson2(e['creator']);
+        return PlayList.fromJson(e, user);
       }).toList();
     });
   }
@@ -185,7 +182,7 @@ class _IndexPageState extends State<IndexPage> {
   @override
   Widget build(BuildContext context) {
     User u = context.watch<User>();
-    print(context);
+    // print(context);
 
     ///显示用户的名称
     ///显示用户的头像
@@ -203,10 +200,11 @@ class _IndexPageState extends State<IndexPage> {
         borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
         child: BackdropFilter(
           filter: showBlur
-              ? ImageFilter.blur(sigmaX: 30, sigmaY: 30)
+              ? ImageFilter.blur(sigmaX: 20, sigmaY: 20)
               : ImageFilter.blur(sigmaX: 0, sigmaY: 0),
           child: Container(
-            padding: const EdgeInsets.fromLTRB(50, 0, 50, 8),
+            color: Colors.white.withOpacity(0.3),
+            padding: const EdgeInsets.fromLTRB(50, 8, 50, 8),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
