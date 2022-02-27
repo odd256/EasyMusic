@@ -1,7 +1,7 @@
 /*
  * @Creator: Odd
  * @Date: 2022-02-09 15:10:10
- * @LastEditTime: 2022-02-26 20:52:15
+ * @LastEditTime: 2022-02-27 22:15:26
  * @FilePath: \flutter_music_player\lib\utils\msg_util.dart
  */
 import 'package:flutter/material.dart';
@@ -18,7 +18,7 @@ class MsgUtil {
         textColor: Colors.white,
         fontSize: 16.0);
   }
-  static warn(msg){
+  static warn({msg}) {
     Fluttertoast.showToast(
         msg: msg,
         toastLength: Toast.LENGTH_SHORT,

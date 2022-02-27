@@ -1,7 +1,7 @@
 /*
  * @Creator: Odd
  * @Date: 2022-02-05 09:43:28
- * @LastEditTime: 2022-02-27 20:36:59
+ * @LastEditTime: 2022-02-27 22:15:39
  * @FilePath: \flutter_music_player\lib\utils\audio_player_manager.dart
  */
 import 'package:audio_session/audio_session.dart';
@@ -35,7 +35,7 @@ class AudioPlayerManager {
     AudioPlayer player = AudioPlayer();
     player.playbackEventStream.listen((event) {},
         onError: (Object e, StackTrace stackTrace) {
-      MsgUtil.warn('A stream error occurred: $e');
+      print('A stream error occurred: $e');
     });
     return player;
   }
@@ -58,7 +58,7 @@ class AudioPlayerManager {
           tag: metadata));
       await player?.play();
     } catch (e) {
-      MsgUtil.warn("播放失败，换一首吧");
+      MsgUtil.warn(msg: "播放失败，换一首吧");
       await player?.stop();
     }
   }

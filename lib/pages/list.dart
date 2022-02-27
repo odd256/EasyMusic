@@ -38,20 +38,36 @@ class _PlayListPageState extends State<PlayListPage> {
 
   bool firstPlay = true; // 是否是第一次播放
 
+  bool hasTimeout = false; // 是否超时
+
   //获取歌单中的歌曲
   _getPlayListSongs() async {
-    var data = await _httpManager.get(
-        '/playlist/detail?id=${widget.playList.id}&cookie=${context.read<User>().cookie}',
-        cancelToken: _token);
-    if (data != null && data['code'] == 200) {
+    if (hasTimeout) {
       setState(() {
-        _songs = data['playlist']['tracks'].map<Song>((e) {
-          final Album al = Album.fromJson(e['al']);
-          final List<Artist> ar =
-              e['ar'].map<Artist>((v) => Artist.fromJson(v)).toList();
-          return Song.fromJson(e, ar, al);
-        }).toList();
+        hasTimeout = false;
       });
+    }
+    try {
+      var data = await _httpManager.get(
+          '/playlist/detail?id=${widget.playList.id}&cookie=${context.read<User>().cookie}',
+          cancelToken: _token);
+      if (data != null && data['code'] == 200) {
+        setState(() {
+          _songs = data['playlist']['tracks'].map<Song>((e) {
+            final Album al = Album.fromJson(e['al']);
+            final List<Artist> ar =
+                e['ar'].map<Artist>((v) => Artist.fromJson(v)).toList();
+            return Song.fromJson(e, ar, al);
+          }).toList();
+        });
+      }
+    } catch (e) {
+      print(e);
+      if (!hasTimeout) {
+        setState(() {
+          hasTimeout = true;
+        });
+      }
     }
   }
 
@@ -118,48 +134,92 @@ class _PlayListPageState extends State<PlayListPage> {
                         color: Colors.white.withOpacity(0.3),
                       ),
                     ),
-                    PlaylistDetails(playlistInfo: widget.playList,),
+                    PlaylistDetails(
+                      playlistInfo: widget.playList,
+                    ),
                   ],
                 )),
           ),
-          // SliverPersistentHeader(
-          //   delegate: CustomAppbarDelegate(),
-          //   pinned: false,
-          //   floating: true,
-          // ),
-          _songs.isEmpty
-              ? const SliverToBoxAdapter(
-                  child: LinearProgressIndicator(),
-                )
-              : SliverPrototypeExtentList(
-                  delegate: SliverChildBuilderDelegate(
-                      (c, i) => ListTile(
-                            onTap: () {
-                              //播放歌曲
-                              playMusic(i);
-                            },
-                            title: Text(
-                              _songs[i].name,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            leading: SizedBox(
-                              child: Center(
-                                  child: Text(
-                                '${i + 1}',
-                                style: const TextStyle(fontSize: 20),
-                              )),
-                              height: 50,
-                              width: 50,
-                            ),
-                            subtitle: Text(_songs[i].showArtist()),
-                          ),
-                      childCount: _songs.length),
-                  prototypeItem: const ListTile(
-                    title: Text(''),
-                    subtitle: Text(''),
-                    leading: Icon(Icons.print),
-                  ),
-                )
+          if (hasTimeout && _songs.isEmpty)
+            SliverToBoxAdapter(
+                child: Center(
+              child: TextButton(
+                onPressed: (){
+                  _getPlayListSongs();
+                },
+                child: const Text(
+                  '获取歌单失败，请重试',
+                  style: TextStyle(color: Colors.blue),
+                ),
+              ),
+            ))
+          else if (_songs.isEmpty && !hasTimeout)
+            const SliverToBoxAdapter(
+              child: LinearProgressIndicator(),
+            )
+          else
+            SliverPrototypeExtentList(
+              delegate: SliverChildBuilderDelegate(
+                  (c, i) => ListTile(
+                        onTap: () {
+                          //播放歌曲
+                          playMusic(i);
+                        },
+                        title: Text(
+                          _songs[i].name,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        leading: SizedBox(
+                          child: Center(
+                              child: Text(
+                            '${i + 1}',
+                            style: const TextStyle(fontSize: 20),
+                          )),
+                          height: 50,
+                          width: 50,
+                        ),
+                        subtitle: Text(_songs[i].showArtist()),
+                      ),
+                  childCount: _songs.length),
+              prototypeItem: const ListTile(
+                title: Text(''),
+                subtitle: Text(''),
+                leading: Icon(Icons.print),
+              ),
+            ),
+          // _songs.isEmpty
+          //     ? const SliverToBoxAdapter(
+          //         child: LinearProgressIndicator(),
+          //       )
+          //     : SliverPrototypeExtentList(
+          //         delegate: SliverChildBuilderDelegate(
+          //             (c, i) => ListTile(
+          //                   onTap: () {
+          //                     //播放歌曲
+          //                     playMusic(i);
+          //                   },
+          //                   title: Text(
+          //                     _songs[i].name,
+          //                     overflow: TextOverflow.ellipsis,
+          //                   ),
+          //                   leading: SizedBox(
+          //                     child: Center(
+          //                         child: Text(
+          //                       '${i + 1}',
+          //                       style: const TextStyle(fontSize: 20),
+          //                     )),
+          //                     height: 50,
+          //                     width: 50,
+          //                   ),
+          //                   subtitle: Text(_songs[i].showArtist()),
+          //                 ),
+          //             childCount: _songs.length),
+          //         prototypeItem: const ListTile(
+          //           title: Text(''),
+          //           subtitle: Text(''),
+          //           leading: Icon(Icons.print),
+          //         ),
+          //       )
         ],
       ),
       bottomNavigationBar: const BottomPlayerBar(),

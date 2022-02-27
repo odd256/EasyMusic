@@ -252,7 +252,7 @@ class _IndexPageState extends State<IndexPage> {
       ),
     );
     //用户歌单更新
-    if (isFirstLoad) {
+    if (u.isLogin && isFirstLoad) {
       _getUserPlayList(u.id);
       isFirstLoad = false;
     }
@@ -295,7 +295,7 @@ class _IndexPageState extends State<IndexPage> {
                       SpUtil.remove('user');
                     }
                   } else {
-                    MsgUtil.warn('你还没登陆呢');
+                    MsgUtil.warn(msg: '你还没登陆呢');
                   }
                 }),
               ]),

@@ -31,7 +31,7 @@ class _LoginPageState extends State<LoginPage> {
     //对输入的手机号进行验证
     if (!RegExp(r"^1([38][0-9]|4[579]|5[0-3,5-9]|6[6]|7[0135678]|9[89])\d{8}$")
         .hasMatch(_phoneController.text)) {
-      MsgUtil.warn('手机号错误！');
+      MsgUtil.warn(msg: '手机号错误！');
       return;
     }
 
@@ -61,7 +61,7 @@ class _LoginPageState extends State<LoginPage> {
         '/captcha/sent?phone=${_phoneController.text}',
         withLoading: false);
     if (data['code'] == 400) {
-      MsgUtil.warn(data['message']);
+      MsgUtil.warn(msg: data['message']);
     }
   }
 
@@ -69,7 +69,7 @@ class _LoginPageState extends State<LoginPage> {
   onLogin() async {
     //先检验验证码的有效性
     if (!RegExp(r'^\d{4,}$').hasMatch(_codeController.text)) {
-      MsgUtil.warn('验证码错误！');
+      MsgUtil.warn(msg: '验证码错误！');
       return;
     }
 
@@ -88,7 +88,7 @@ class _LoginPageState extends State<LoginPage> {
         // Navigator.of(context).popUntil((route) => route.settings.name == 'index');
       } else {
         if (data['message'] != null) {
-          MsgUtil.warn(data['message']);
+          MsgUtil.warn(msg:data['message']);
         }
       }
     } catch (e) {

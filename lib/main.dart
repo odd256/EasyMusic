@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -98,17 +99,25 @@ class _SplashPageState extends State<SplashPage> {
           builder: (BuildContext context) => const IndexPage()));
       return;
     }
-    var data = await _httpManager.get('/login/status?cookie=${user['cookie']}');
-    if (data['data']['code'] == 200) {
-      User u = User.init(user['uname'], user['id'], user['avatarUrl'],
-          user['cookie'], user['isLogin'], user['backgroundUrl']);
-      context.read<User>().updateUser(u);
-    } else {
-      MsgUtil.warn('请重新登录');
+    try {
+      var data =
+          await _httpManager.get('/login/status?cookie=${user['cookie']}');
+      if (data['data']['code'] == 200) {
+        User u = User.init(user['uname'], user['id'], user['avatarUrl'],
+            user['cookie'], user['isLogin'], user['backgroundUrl']);
+        context.read<User>().updateUser(u);
+      } else {
+        MsgUtil.warn(msg: '请重新登录');
+      }
+    } on DioError catch (e) {
+      print('111111111111111${e.type}');
+    } catch (e) {
+      print(e.toString());
+      MsgUtil.warn(msg: '发生了一些错误');
     }
     //重新定向至主页
-    Navigator.of(context).pushReplacement(MaterialPageRoute(
-        builder: (BuildContext context) => const IndexPage()));
+      Navigator.of(context).pushReplacement(MaterialPageRoute(
+          builder: (BuildContext context) => const IndexPage()));
   }
 
   @override
