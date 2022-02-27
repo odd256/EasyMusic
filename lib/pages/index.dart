@@ -289,6 +289,7 @@ class _IndexPageState extends State<IndexPage> {
         return true;
       },
       child: Scaffold(
+        drawerEdgeDragWidth: 100,
         drawer: Drawer(
           backgroundColor: const Color(0xFFF5F5F5),
           child: ListView(
@@ -303,21 +304,23 @@ class _IndexPageState extends State<IndexPage> {
                     }));
                   }
                 }),
-                _buildListTile('登出', Icons.logout, () async {
-                  Navigator.pop(context);
-                  if (u.isLogin) {
-                    var data = await _httpManager.get('/logout');
-                    if (data['code'] == 200) {
-                      MsgUtil.primary('退出成功');
-                      //退出成功
-                      User u = User();
-                      context.read<User>().updateUser(u);
-                      //清除所有的信息
-                      SpUtil.clear();
+                _buildListTile('登出', Icons.logout, () {
+                  MsgUtil.confirm(context, msg: '确定要退出吗？', onConfirm: () async {
+                    Navigator.pop(context);
+                    if (u.isLogin) {
+                        //退出成功
+                        User u = User();
+                        context.read<User>().updateUser(u);
+                        setState(() {
+                          _playList = [];
+                        });
+                        //清除所有的信息
+                        SpUtil.clear();
+                        MsgUtil.primary('退出成功');
+                    } else {
+                      MsgUtil.warn(msg: '你还没登陆呢');
                     }
-                  } else {
-                    MsgUtil.warn(msg: '你还没登陆呢');
-                  }
+                  });
                 }),
               ]),
             ],

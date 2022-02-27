@@ -52,7 +52,6 @@ class _SearchPageState extends State<SearchPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        iconTheme: const IconThemeData(color: Colors.black),
         title: Container(
           height: 36,
           alignment: Alignment.center,
@@ -91,7 +90,7 @@ class _SearchPageState extends State<SearchPage> {
                 focusedBorder: OutlineInputBorder(
                     borderSide:
                         BorderSide(color: Colors.transparent, width: 0)),
-                icon: Icon(Icons.search)),
+                icon: Icon(Icons.search, color: Colors.black,)),
           ),
         ),
       ),
