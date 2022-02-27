@@ -25,7 +25,7 @@ class IndexPage extends StatefulWidget {
 }
 
 class _IndexPageState extends State<IndexPage> {
-  List _playList = [];
+  List<PlayList> _playList = [];
 
   bool isFirstLoad = true; // 是否是第一次加载
 
@@ -149,13 +149,28 @@ class _IndexPageState extends State<IndexPage> {
 
   //获取用户歌单
   _getUserPlayList(id) async {
-    var data = await _httpManager.get('/user/playlist?uid=$id');
-    setState(() {
-      _playList = data['playlist'].map((e) {
-        User user = User.fromJson2(e['creator']);
-        return PlayList.fromJson(e, user);
-      }).toList();
-    });
+    bool? flag = SpUtil.haveKey('playList');
+    // bool flag = false;
+    print(flag);
+    if (flag == null || !flag) {
+      var data = await _httpManager.get('/user/playlist?uid=$id');
+      setState(() {
+        _playList = data['playlist'].map<PlayList>((e) {
+          User user = User.fromJson2(e['creator']);
+          return PlayList.fromJson(e, user);
+        }).toList();
+      });
+      //放入本地缓存
+      await SpUtil.putObjectList('playList', _playList);
+    } else {
+      //从本地缓存获取
+      setState(() {
+        _playList = SpUtil.getObjList<PlayList>('playList', (v) {
+          print(v['creator']);
+          return PlayList.fromJson(v, User.fromJson2(v['creator']));
+        })!;
+      });
+    }
   }
 
   @override
@@ -183,6 +198,7 @@ class _IndexPageState extends State<IndexPage> {
   Widget build(BuildContext context) {
     User u = context.watch<User>();
     // print(context);
+    // SpUtil.clear();
 
     ///显示用户的名称
     ///显示用户的头像

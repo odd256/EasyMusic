@@ -94,9 +94,11 @@ class _SplashPageState extends State<SplashPage> {
     var user = SpUtil.getObject('user');
     if (user == null) {
       MsgUtil.tip(msg: '请登录:)');
-      //重新定向至主页
-      Navigator.of(context).pushReplacement(MaterialPageRoute(
-          builder: (BuildContext context) => const IndexPage()));
+      Future.delayed(const Duration(seconds: 3), () {
+        //重新定向至主页
+        Navigator.of(context).pushReplacement(MaterialPageRoute(
+            builder: (BuildContext context) => const IndexPage()));
+      });
       return;
     }
     try {
@@ -109,15 +111,15 @@ class _SplashPageState extends State<SplashPage> {
       } else {
         MsgUtil.warn(msg: '请重新登录');
       }
-    } on DioError catch (e) {
-      print('111111111111111${e.type}');
     } catch (e) {
       print(e.toString());
       MsgUtil.warn(msg: '发生了一些错误');
     }
-    //重新定向至主页
+    Future.delayed(const Duration(seconds: 3), () {
+      // 重新定向至主页
       Navigator.of(context).pushReplacement(MaterialPageRoute(
           builder: (BuildContext context) => const IndexPage()));
+    });
   }
 
   @override

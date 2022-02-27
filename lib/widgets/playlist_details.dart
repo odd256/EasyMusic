@@ -1,7 +1,7 @@
 /*
  * @Creator: Odd
  * @Date: 2022-02-27 19:03:22
- * @LastEditTime: 2022-02-27 20:35:07
+ * @LastEditTime: 2022-02-28 00:08:38
  * @FilePath: \flutter_music_player\lib\widgets\playlist_details.dart
  */
 import 'package:flutter/material.dart';
@@ -23,6 +23,7 @@ class PlaylistDetails extends StatelessWidget {
           FadeInImage.memoryNetwork(
               height: 170,
               width: 170,
+              fit: BoxFit.fill,
               placeholder: kTransparentImage,
               image: playlistInfo.coverImgUrl),
           Container(
@@ -52,7 +53,7 @@ class PlaylistDetails extends StatelessWidget {
                     ],
                   ),
                   Text('共收录${playlistInfo.trackCount}首歌',
-                      style: const TextStyle(fontSize: 18)),
+                      style: const TextStyle(fontSize: 14)),
                 ]),
           )
         ],

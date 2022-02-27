@@ -1,7 +1,7 @@
 /*
  * @Creator: Odd
  * @Date: 2022-02-07 02:57:32
- * @LastEditTime: 2022-02-27 20:23:41
+ * @LastEditTime: 2022-02-28 02:54:12
  * @FilePath: \flutter_music_player\lib\models\user.dart
  */
 import 'package:flutter/material.dart';
@@ -20,6 +20,7 @@ class User with ChangeNotifier {
   User.init(this.uname, this.id, this.avatarUrl, this.cookie, this.isLogin,
       this.backgroundUrl);
 
+
   User.fromJson(Map<String, dynamic> json)
       : id = json['account']['id'],
         uname = json['profile']['nickname'],
@@ -29,14 +30,14 @@ class User with ChangeNotifier {
         backgroundUrl = json['profile']['backgroundUrl'];
   
   ///保存创建者信息
-  User.fromJson2(Map<String, dynamic> json)
+  User.fromJson2(Map<dynamic, dynamic> json)
       : id = json['userId'],
         uname = json['nickname'],
         avatarUrl = json['avatarUrl'];
 
-  Map<String, dynamic> toJson() => <String, dynamic>{
-        'uname': uname,
-        'id': id,
+  Map<String, Object> toJson() => <String, Object>{
+        'nickname': uname,
+        'userId': id,
         'avatarUrl': avatarUrl,
         'cookie': cookie,
         'isLogin': isLogin,

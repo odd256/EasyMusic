@@ -117,34 +117,33 @@ class _PlayListPageState extends State<PlayListPage> {
             ],
             expandedHeight: 320.0,
             flexibleSpace: FlexibleSpaceBar(
-                stretchModes: const [StretchMode.zoomBackground],
                 background: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    FadeInImage.memoryNetwork(
-                      fit: BoxFit.cover,
-                      height: double.infinity,
-                      width: double.infinity,
-                      image: widget.playList.coverImgUrl,
-                      placeholder: kTransparentImage,
-                    ),
-                    BackdropFilter(
-                      filter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
-                      child: Container(
-                        color: Colors.white.withOpacity(0.3),
-                      ),
-                    ),
-                    PlaylistDetails(
-                      playlistInfo: widget.playList,
-                    ),
-                  ],
-                )),
+              alignment: Alignment.center,
+              children: [
+                FadeInImage.memoryNetwork(
+                  fit: BoxFit.cover,
+                  height: double.infinity,
+                  width: double.infinity,
+                  image: widget.playList.coverImgUrl,
+                  placeholder: kTransparentImage,
+                ),
+                BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
+                  child: Container(
+                    color: Colors.white.withOpacity(0.3),
+                  ),
+                ),
+                PlaylistDetails(
+                  playlistInfo: widget.playList,
+                ),
+              ],
+            )),
           ),
           if (hasTimeout && _songs.isEmpty)
             SliverToBoxAdapter(
                 child: Center(
               child: TextButton(
-                onPressed: (){
+                onPressed: () {
                   _getPlayListSongs();
                 },
                 child: const Text(

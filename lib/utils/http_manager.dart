@@ -1,7 +1,7 @@
 /*
  * @Creator: Odd
  * @Date: 2022-02-05 05:08:38
- * @LastEditTime: 2022-02-27 23:25:09
+ * @LastEditTime: 2022-02-28 02:13:57
  * @FilePath: \flutter_music_player\lib\utils\http_manager.dart
  */
 import 'package:dio/adapter.dart';
@@ -45,7 +45,7 @@ class HttpManager {
     dio.options.connectTimeout = 7000; //超时时间
     dio.options.receiveTimeout = 3000; //接收数据最长时间
     dio.options.responseType = ResponseType.json; //数据格式
-    dio.interceptors.add(LogInterceptor(requestBody: true)); //日志拦截器
+    // dio.interceptors.add(LogInterceptor(requestBody: true)); //日志拦截器
     dio.interceptors.add(CustomDioInterceptor()); //自定义拦截器
     _dio = dio;
   }

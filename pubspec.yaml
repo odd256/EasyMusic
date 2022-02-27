@@ -44,9 +44,11 @@ dependencies:
   flutter_easyloading: ^3.0.3 # loading
   provider: ^6.0.2 # 状态管理
   sp_util: ^2.0.3 # 持久化
+  # sqflite: ^2.0.2 # 持久化，本地数据库，暂时用不到
   flutter_screenutil: ^5.1.1 # 屏幕适配
   cached_network_image: ^3.2.0 # 图片缓存
   transparent_image: ^2.0.0 # 占位图
+  # path: ^1.8.1 # 添加对路径的操作
 #  palette_generator: ^0.3.3 # 取色工具
 
 dev_dependencies:
