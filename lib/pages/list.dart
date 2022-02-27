@@ -43,7 +43,8 @@ class _PlayListPageState extends State<PlayListPage> {
 
   //获取歌单中的歌曲
   _getPlayListSongs() async {
-    bool? isCached = SpUtil.haveKey('playListSongs');
+    // SpUtil.remove('playListSongs${widget.playList.id}');
+    bool? isCached = SpUtil.haveKey('playListSongs${widget.playList.id}');
     // bool? isCached = false;
     // if (hasTimeout) {
     //   setState(() {
@@ -53,13 +54,14 @@ class _PlayListPageState extends State<PlayListPage> {
     if (isCached == true) {
       //从缓存中获取
       print('从缓存中获取');
+      var s = SpUtil.getObjList<Song>('playListSongs${widget.playList.id}', (v) {
+        print(v);
+        List<Artist> artists =
+            v['artist'].map<Artist>((e) => Artist.fromJson(e))?.toList();
+        return Song.fromJson(v, artists, Album.fromJson(v['album']));
+      })!;
       setState(() {
-        _songs = SpUtil.getObjList<Song>('playListSongs', (v) {
-          print(v);
-          List<Artist> artists =
-              v['artist'].map<Artist>((e) => Artist.fromJson(e))?.toList();
-          return Song.fromJson(v, artists, Album.fromJson(v['album']));
-        })!;
+        _songs = s;
       });
     } else {
       //从网络获取
@@ -75,9 +77,9 @@ class _PlayListPageState extends State<PlayListPage> {
                   e['ar'].map<Artist>((v) => Artist.fromJson(v)).toList();
               return Song.fromJson(e, ar, al);
             }).toList();
+            //缓存
+            SpUtil.putObjectList('playListSongs${widget.playList.id}', _songs);
           });
-          //缓存
-          SpUtil.putObjectList('playListSongs', _songs);
         }
       } catch (e) {
         print('+++++++++++++++++++++++++++++++++++++++++++++++++');
@@ -172,40 +174,39 @@ class _PlayListPageState extends State<PlayListPage> {
           //       ),
           //     ),
           //   ))
-          _songs.isEmpty?
-            const SliverToBoxAdapter(
-              child: LinearProgressIndicator(),
-            )
-          :
-            SliverPrototypeExtentList(
-              delegate: SliverChildBuilderDelegate(
-                  (c, i) => ListTile(
-                        onTap: () {
-                          //播放歌曲
-                          playMusic(i);
-                        },
-                        title: Text(
-                          _songs[i].name,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        leading: SizedBox(
-                          child: Center(
-                              child: Text(
-                            '${i + 1}',
-                            style: const TextStyle(fontSize: 20),
-                          )),
-                          height: 50,
-                          width: 50,
-                        ),
-                        subtitle: Text(_songs[i].showArtist()),
-                      ),
-                  childCount: _songs.length),
-              prototypeItem: const ListTile(
-                title: Text(''),
-                subtitle: Text(''),
-                leading: Icon(Icons.print),
-              ),
-            ),
+          _songs.isEmpty
+              ? const SliverToBoxAdapter(
+                  child: LinearProgressIndicator(),
+                )
+              : SliverPrototypeExtentList(
+                  delegate: SliverChildBuilderDelegate(
+                      (c, i) => ListTile(
+                            onTap: () {
+                              //播放歌曲
+                              playMusic(i);
+                            },
+                            title: Text(
+                              _songs[i].name,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            leading: SizedBox(
+                              child: Center(
+                                  child: Text(
+                                '${i + 1}',
+                                style: const TextStyle(fontSize: 20),
+                              )),
+                              height: 50,
+                              width: 50,
+                            ),
+                            subtitle: Text(_songs[i].showArtist()),
+                          ),
+                      childCount: _songs.length),
+                  prototypeItem: const ListTile(
+                    title: Text(''),
+                    subtitle: Text(''),
+                    leading: Icon(Icons.print),
+                  ),
+                ),
           // _songs.isEmpty
           //     ? const SliverToBoxAdapter(
           //         child: LinearProgressIndicator(),

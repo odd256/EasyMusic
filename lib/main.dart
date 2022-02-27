@@ -93,29 +93,32 @@ class _SplashPageState extends State<SplashPage> {
   _autoLogin() async {
     var user = SpUtil.getObject('user');
     if (user == null) {
-      MsgUtil.tip(msg: '请登录:)');
-      Future.delayed(const Duration(seconds: 3), () {
+      //没有登录过
+      MsgUtil.tip(msg: '请先登录 :)');
+      Future.delayed(const Duration(milliseconds: 1500), () {
         //重新定向至主页
         Navigator.of(context).pushReplacement(MaterialPageRoute(
             builder: (BuildContext context) => const IndexPage()));
       });
       return;
     }
+    //==============================
+    //登录过
     try {
       var data =
           await _httpManager.get('/login/status?cookie=${user['cookie']}');
       if (data['data']['code'] == 200) {
-        User u = User.init(user['uname'], user['id'], user['avatarUrl'],
+        User u = User.init(user['nickname'], user['userId'], user['avatarUrl'],
             user['cookie'], user['isLogin'], user['backgroundUrl']);
         context.read<User>().updateUser(u);
       } else {
         MsgUtil.warn(msg: '请重新登录');
       }
-    } catch (e) {
-      print(e.toString());
+    }on DioError catch (e) {
+      print(e);
       MsgUtil.warn(msg: '发生了一些错误');
     }
-    Future.delayed(const Duration(seconds: 3), () {
+    Future.delayed(const Duration(milliseconds: 1500), () {
       // 重新定向至主页
       Navigator.of(context).pushReplacement(MaterialPageRoute(
           builder: (BuildContext context) => const IndexPage()));

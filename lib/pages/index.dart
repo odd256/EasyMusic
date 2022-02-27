@@ -27,8 +27,6 @@ class IndexPage extends StatefulWidget {
 class _IndexPageState extends State<IndexPage> {
   List<PlayList> _playList = [];
 
-  bool isFirstLoad = true; // 是否是第一次加载
-
   bool showBlur = true; // 是否模糊背景
 
   DateTime? _lastPressedAt; //上次点击时间
@@ -152,23 +150,31 @@ class _IndexPageState extends State<IndexPage> {
     bool? isCached = SpUtil.haveKey('playList');
     // bool flag = false;
     // print(isCached);
-    if (isCached == null || !isCached) {
+
+    if (isCached == true) {
+      //从本地缓存获取
+      if (_playList.isEmpty) {
+        //避免重复加载
+        setState(() {
+          _playList = SpUtil.getObjList<PlayList>('playList', (v) {
+            return PlayList.fromJson(v, User.fromJson2(v['creator']));
+          })!;
+        });
+      }
+    } else {
+      //从网络获取
       var data = await _httpManager.get('/user/playlist?uid=$id');
-      setState(() {
-        _playList = data['playlist'].map<PlayList>((e) {
-          User user = User.fromJson2(e['creator']);
-          return PlayList.fromJson(e, user);
-        }).toList();
-      });
+      if (_playList.isEmpty) {
+        //避免重复加载
+        setState(() {
+          _playList = data['playlist'].map<PlayList>((e) {
+            User user = User.fromJson2(e['creator']);
+            return PlayList.fromJson(e, user);
+          }).toList();
+        });
+      }
       //放入本地缓存
       await SpUtil.putObjectList('playList', _playList);
-    } else {
-      //从本地缓存获取
-      setState(() {
-        _playList = SpUtil.getObjList<PlayList>('playList', (v) {
-          return PlayList.fromJson(v, User.fromJson2(v['creator']));
-        })!;
-      });
     }
   }
 
@@ -267,9 +273,8 @@ class _IndexPageState extends State<IndexPage> {
       ),
     );
     //用户歌单更新
-    if (u.isLogin && isFirstLoad) {
+    if (u.isLogin) {
       _getUserPlayList(u.id);
-      isFirstLoad = false;
     }
     return WillPopScope(
       onWillPop: () async {
