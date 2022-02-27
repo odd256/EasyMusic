@@ -289,16 +289,16 @@ class _IndexPageState extends State<IndexPage> {
           child: ListView(
             children: [
               _buildListColumn([
-                _buildListTile('关于', Icons.announcement_rounded),
+                _buildListTile('关于', Icons.announcement),
                 _buildListTile('设置', Icons.settings),
-                _buildListTile('账号', Icons.person_add_rounded, () {
+                _buildListTile('账号', Icons.person_add, () {
                   if (!u.isLogin) {
                     Navigator.push(context, MaterialPageRoute(builder: (c) {
                       return const LoginPage();
                     }));
                   }
                 }),
-                _buildListTile('登出', Icons.logout_rounded, () async {
+                _buildListTile('登出', Icons.logout, () async {
                   Navigator.pop(context);
                   if (u.isLogin) {
                     var data = await _httpManager.get('/logout');
@@ -307,7 +307,8 @@ class _IndexPageState extends State<IndexPage> {
                       //退出成功
                       User u = User();
                       context.read<User>().updateUser(u);
-                      SpUtil.remove('user');
+                      //清除所有的信息
+                      SpUtil.clear();
                     }
                   } else {
                     MsgUtil.warn(msg: '你还没登陆呢');
