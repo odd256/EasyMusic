@@ -149,10 +149,10 @@ class _IndexPageState extends State<IndexPage> {
 
   //获取用户歌单
   _getUserPlayList(id) async {
-    bool? flag = SpUtil.haveKey('playList');
+    bool? isCached = SpUtil.haveKey('playList');
     // bool flag = false;
-    print(flag);
-    if (flag == null || !flag) {
+    // print(isCached);
+    if (isCached == null || !isCached) {
       var data = await _httpManager.get('/user/playlist?uid=$id');
       setState(() {
         _playList = data['playlist'].map<PlayList>((e) {
@@ -166,7 +166,6 @@ class _IndexPageState extends State<IndexPage> {
       //从本地缓存获取
       setState(() {
         _playList = SpUtil.getObjList<PlayList>('playList', (v) {
-          print(v['creator']);
           return PlayList.fromJson(v, User.fromJson2(v['creator']));
         })!;
       });

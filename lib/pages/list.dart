@@ -14,6 +14,7 @@ import 'package:flutter_music_player/utils/http_manager.dart';
 import 'package:flutter_music_player/widgets/playlist_details.dart';
 import 'package:flutter_music_player/widgets/bottom_player_bar.dart';
 import 'package:provider/provider.dart';
+import 'package:sp_util/sp_util.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 class PlayListPage extends StatefulWidget {
@@ -38,35 +39,54 @@ class _PlayListPageState extends State<PlayListPage> {
 
   bool firstPlay = true; // 是否是第一次播放
 
-  bool hasTimeout = false; // 是否超时
+  // bool hasTimeout = false; // 是否超时
 
   //获取歌单中的歌曲
   _getPlayListSongs() async {
-    if (hasTimeout) {
+    bool? isCached = SpUtil.haveKey('playListSongs');
+    // bool? isCached = false;
+    // if (hasTimeout) {
+    //   setState(() {
+    //     hasTimeout = false;
+    //   });
+    // }
+    if (isCached == true) {
+      //从缓存中获取
+      print('从缓存中获取');
       setState(() {
-        hasTimeout = false;
+        _songs = SpUtil.getObjList<Song>('playListSongs', (v) {
+          print(v);
+          List<Artist> artists =
+              v['artist'].map<Artist>((e) => Artist.fromJson(e))?.toList();
+          return Song.fromJson(v, artists, Album.fromJson(v['album']));
+        })!;
       });
-    }
-    try {
-      var data = await _httpManager.get(
-          '/playlist/detail?id=${widget.playList.id}&cookie=${context.read<User>().cookie}',
-          cancelToken: _token);
-      if (data != null && data['code'] == 200) {
-        setState(() {
-          _songs = data['playlist']['tracks'].map<Song>((e) {
-            final Album al = Album.fromJson(e['al']);
-            final List<Artist> ar =
-                e['ar'].map<Artist>((v) => Artist.fromJson(v)).toList();
-            return Song.fromJson(e, ar, al);
-          }).toList();
-        });
-      }
-    } catch (e) {
-      print(e);
-      if (!hasTimeout) {
-        setState(() {
-          hasTimeout = true;
-        });
+    } else {
+      //从网络获取
+      try {
+        var data = await _httpManager.get(
+            '/playlist/detail?id=${widget.playList.id}&cookie=${context.read<User>().cookie}',
+            cancelToken: _token);
+        if (data != null && data['code'] == 200) {
+          setState(() {
+            _songs = data['playlist']['tracks'].map<Song>((e) {
+              final Album al = Album.fromJson(e['al']);
+              final List<Artist> ar =
+                  e['ar'].map<Artist>((v) => Artist.fromJson(v)).toList();
+              return Song.fromJson(e, ar, al);
+            }).toList();
+          });
+          //缓存
+          SpUtil.putObjectList('playListSongs', _songs);
+        }
+      } catch (e) {
+        print('+++++++++++++++++++++++++++++++++++++++++++++++++');
+        print(e);
+        // if (!hasTimeout) {
+        //   setState(() {
+        //     hasTimeout = true;
+        //   });
+        // }
       }
     }
   }
@@ -139,24 +159,24 @@ class _PlayListPageState extends State<PlayListPage> {
               ],
             )),
           ),
-          if (hasTimeout && _songs.isEmpty)
-            SliverToBoxAdapter(
-                child: Center(
-              child: TextButton(
-                onPressed: () {
-                  _getPlayListSongs();
-                },
-                child: const Text(
-                  '获取歌单失败，请重试',
-                  style: TextStyle(color: Colors.blue),
-                ),
-              ),
-            ))
-          else if (_songs.isEmpty && !hasTimeout)
+          // if (hasTimeout && _songs.isEmpty)
+          //   SliverToBoxAdapter(
+          //       child: Center(
+          //     child: TextButton(
+          //       onPressed: () {
+          //         _getPlayListSongs();
+          //       },
+          //       child: const Text(
+          //         '获取歌单失败，请重试',
+          //         style: TextStyle(color: Colors.blue),
+          //       ),
+          //     ),
+          //   ))
+          _songs.isEmpty?
             const SliverToBoxAdapter(
               child: LinearProgressIndicator(),
             )
-          else
+          :
             SliverPrototypeExtentList(
               delegate: SliverChildBuilderDelegate(
                   (c, i) => ListTile(
