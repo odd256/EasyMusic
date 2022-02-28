@@ -39,23 +39,12 @@ class _PlayListPageState extends State<PlayListPage> {
 
   bool firstPlay = true; // 是否是第一次播放
 
-  // bool hasTimeout = false; // 是否超时
-
   //获取歌单中的歌曲
   _getPlayListSongs() async {
-    // SpUtil.remove('playListSongs${widget.playList.id}');
     bool? isCached = SpUtil.haveKey('playListSongs${widget.playList.id}');
-    // bool? isCached = false;
-    // if (hasTimeout) {
-    //   setState(() {
-    //     hasTimeout = false;
-    //   });
-    // }
     if (isCached == true) {
       //从缓存中获取
-      print('从缓存中获取');
       var s = SpUtil.getObjList<Song>('playListSongs${widget.playList.id}', (v) {
-        print(v);
         List<Artist> artists =
             v['artist'].map<Artist>((e) => Artist.fromJson(e))?.toList();
         return Song.fromJson(v, artists, Album.fromJson(v['album']));
@@ -82,13 +71,7 @@ class _PlayListPageState extends State<PlayListPage> {
           });
         }
       } catch (e) {
-        print('+++++++++++++++++++++++++++++++++++++++++++++++++');
         print(e);
-        // if (!hasTimeout) {
-        //   setState(() {
-        //     hasTimeout = true;
-        //   });
-        // }
       }
     }
   }
@@ -161,19 +144,6 @@ class _PlayListPageState extends State<PlayListPage> {
               ],
             )),
           ),
-          // if (hasTimeout && _songs.isEmpty)
-          //   SliverToBoxAdapter(
-          //       child: Center(
-          //     child: TextButton(
-          //       onPressed: () {
-          //         _getPlayListSongs();
-          //       },
-          //       child: const Text(
-          //         '获取歌单失败，请重试',
-          //         style: TextStyle(color: Colors.blue),
-          //       ),
-          //     ),
-          //   ))
           _songs.isEmpty
               ? const SliverToBoxAdapter(
                   child: LinearProgressIndicator(),
@@ -207,39 +177,6 @@ class _PlayListPageState extends State<PlayListPage> {
                     leading: Icon(Icons.print),
                   ),
                 ),
-          // _songs.isEmpty
-          //     ? const SliverToBoxAdapter(
-          //         child: LinearProgressIndicator(),
-          //       )
-          //     : SliverPrototypeExtentList(
-          //         delegate: SliverChildBuilderDelegate(
-          //             (c, i) => ListTile(
-          //                   onTap: () {
-          //                     //播放歌曲
-          //                     playMusic(i);
-          //                   },
-          //                   title: Text(
-          //                     _songs[i].name,
-          //                     overflow: TextOverflow.ellipsis,
-          //                   ),
-          //                   leading: SizedBox(
-          //                     child: Center(
-          //                         child: Text(
-          //                       '${i + 1}',
-          //                       style: const TextStyle(fontSize: 20),
-          //                     )),
-          //                     height: 50,
-          //                     width: 50,
-          //                   ),
-          //                   subtitle: Text(_songs[i].showArtist()),
-          //                 ),
-          //             childCount: _songs.length),
-          //         prototypeItem: const ListTile(
-          //           title: Text(''),
-          //           subtitle: Text(''),
-          //           leading: Icon(Icons.print),
-          //         ),
-          //       )
         ],
       ),
       bottomNavigationBar: const BottomPlayerBar(),

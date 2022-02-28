@@ -1,7 +1,7 @@
 /*
  * @Creator: Odd
  * @Date: 2022-02-28 16:12:08
- * @LastEditTime: 2022-02-28 16:54:44
+ * @LastEditTime: 2022-03-01 00:23:56
  * @FilePath: \flutter_music_player\lib\widgets\index_header.dart
  */
 import 'dart:ui';
@@ -47,7 +47,7 @@ class IndexHeader extends StatelessWidget {
       expandedHeight: 300.0,
       flexibleSpace: FlexibleSpaceBar(
         centerTitle: true,
-        title: IndexHeader(
+        title: IndexUserInfo(
           user: user,
           showBlur: showBlur,
           onTapUserInfo: onTapUserInfo,

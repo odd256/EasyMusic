@@ -67,8 +67,6 @@ class _IndexPageState extends State<IndexPage> {
   //获取用户歌单
   _getUserPlayList(id) async {
     bool? isCached = SpUtil.haveKey('playList');
-    // bool flag = false;
-    // print(isCached);
 
     if (isCached == true) {
       //从本地缓存获取
@@ -111,12 +109,8 @@ class _IndexPageState extends State<IndexPage> {
       Navigator.push(context, MaterialPageRoute(builder: (c) {
         return const LoginPage();
       })).then((value) {
-        if (value == 'success') {
-          Navigator.pop(context);
-        }
+          // Navigator.pop(context);
       });
-
-      // Navigator.pop(context);
     }
   }
 
@@ -166,9 +160,6 @@ class _IndexPageState extends State<IndexPage> {
     // print(context);
     // SpUtil.clear();
 
-    ///显示用户的名称
-    ///显示用户的头像
-    ///显示用户的id
     //用户歌单更新
     if (u.isLogin) _getUserPlayList(u.id);
     return WillPopScope(

@@ -1,7 +1,7 @@
 <!--
  * @Creator: Odd
  * @Date: 2022-02-05 03:56:00
- * @LastEditTime: 2022-02-28 03:51:05
+ * @LastEditTime: 2022-02-28 16:58:47
  * @FilePath: \flutter_music_player\README.md
 -->
 # flutter_music_player
@@ -22,6 +22,7 @@
 ## 正在进行中
 
 - 歌词页面
+- 部分代码的重构
 - ~~添加对sqlite的支持，减少网络延迟~~
 
 ## 计划实现（优先级从上往下递减）
