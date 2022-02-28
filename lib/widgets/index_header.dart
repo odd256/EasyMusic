@@ -1,7 +1,7 @@
 /*
  * @Creator: Odd
  * @Date: 2022-02-28 16:12:08
- * @LastEditTime: 2022-03-01 00:23:56
+ * @LastEditTime: 2022-03-01 00:49:59
  * @FilePath: \flutter_music_player\lib\widgets\index_header.dart
  */
 import 'dart:ui';
@@ -30,7 +30,6 @@ class IndexHeader extends StatelessWidget {
     return SliverAppBar(
       pinned: true,
       stretch: true,
-      // 滑动到顶端时会固定住
       actions: [
         IconButton(
           onPressed: () {

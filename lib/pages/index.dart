@@ -41,11 +41,14 @@ class _IndexPageState extends State<IndexPage> {
         controller: _controller,
         physics: const BouncingScrollPhysics(),
         slivers: [
+          //头部
           IndexHeader(
             user: u,
             showBlur: showBlur,
             onTapUserInfo: () => onTapUserInfo(u),
           ),
+
+          //歌单列表
           SliverPrototypeExtentList(
             delegate: SliverChildBuilderDelegate(
                 (c, i) => KeepAliveWrapper(
@@ -109,7 +112,7 @@ class _IndexPageState extends State<IndexPage> {
       Navigator.push(context, MaterialPageRoute(builder: (c) {
         return const LoginPage();
       })).then((value) {
-          // Navigator.pop(context);
+        // Navigator.pop(context);
       });
     }
   }
