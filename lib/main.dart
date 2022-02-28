@@ -18,8 +18,6 @@ Future<void> main() async {
   await SpUtil.getInstance();
   if (Platform.isAndroid) {
     // 以下两行 设置android状态栏为透明的沉浸。
-    // 写在组件渲染之后，是为了在渲染后进行set赋值，覆盖状态栏，
-    // 写在组件渲染之前，MaterialApp组件会覆盖掉这个值。
     SystemUiOverlayStyle systemUiOverlayStyle =
         const SystemUiOverlayStyle(statusBarColor: Colors.transparent);
     SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
@@ -47,7 +45,6 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => User()),
@@ -60,6 +57,11 @@ class _MyAppState extends State<MyApp> {
       ],
       child: MaterialApp(
         theme: ThemeData.light().copyWith(
+          pageTransitionsTheme: const PageTransitionsTheme(
+            builders: <TargetPlatform, PageTransitionsBuilder>{
+              TargetPlatform.android: ZoomPageTransitionsBuilder(),
+            },
+          ),
           primaryIconTheme: const IconThemeData(color: Colors.black),
           colorScheme:
               Theme.of(context).colorScheme.copyWith(secondary: Colors.pink),
@@ -113,7 +115,7 @@ class _SplashPageState extends State<SplashPage> {
       } else {
         MsgUtil.warn(msg: '请重新登录');
       }
-    }on DioError catch (e) {
+    } on DioError catch (e) {
       print(e);
       MsgUtil.warn(msg: '发生了一些错误');
     }

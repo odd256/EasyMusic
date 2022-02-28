@@ -1,3 +1,4 @@
+import 'package:animations/animations.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -199,42 +200,56 @@ class _IndexPageState extends State<IndexPage> {
 class IndexListTile extends StatelessWidget {
   final PlayList playList;
 
+  final ContainerTransitionType _transitionType = ContainerTransitionType.fade;
+
   const IndexListTile({Key? key, required this.playList}) : super(key: key);
+
+  void _showMarkedAsDoneSnackbar(context, bool? isMarkedAsDone) {
+    if (isMarkedAsDone ?? false) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Marked as done!'),
+      ));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      onTap: () {
-        //点击进入歌单列表
-        Navigator.push(
-            context,
-            CupertinoPageRoute(
-                builder: (context) => PlayListPage(
-                      title: '歌单详情',
-                      playList: playList,
-                    )));
-      },
-      title: Text(
-        playList.name,
-        overflow: TextOverflow.ellipsis,
+    return OpenContainer(
+      transitionType: _transitionType,
+      tappable: false,
+      closedElevation: 0.0,
+      onClosed: (bool? v)=>_showMarkedAsDoneSnackbar(context, v),
+      closedShape: const RoundedRectangleBorder(),
+      openBuilder: (_, __) => PlayListPage(
+        title: '歌单详情',
+        playList: playList,
       ),
-      leading: CachedNetworkImage(
-        imageUrl: playList.coverImgUrl,
-        width: 55,
-        progressIndicatorBuilder: (c, u, d) =>
-            LinearProgressIndicator(value: d.progress),
-        errorWidget: (c, u, e) => const Icon(Icons.error_rounded),
-        imageBuilder: (context, imageProvider) => Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            image: DecorationImage(
-              image: imageProvider,
-              fit: BoxFit.cover,
+      closedBuilder: (context, openContainer) {
+        return ListTile(
+          onTap: openContainer,
+          title: Text(
+            playList.name,
+            overflow: TextOverflow.ellipsis,
+          ),
+          leading: CachedNetworkImage(
+            imageUrl: playList.coverImgUrl,
+            width: 55,
+            progressIndicatorBuilder: (c, u, d) =>
+                LinearProgressIndicator(value: d.progress),
+            errorWidget: (c, u, e) => const Icon(Icons.error_rounded),
+            imageBuilder: (context, imageProvider) => Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                image: DecorationImage(
+                  image: imageProvider,
+                  fit: BoxFit.cover,
+                ),
+              ),
             ),
           ),
-        ),
-      ),
-      subtitle: Text('${playList.trackCount} 首'),
+          subtitle: Text('${playList.trackCount} 首'),
+        );
+      },
     );
   }
 }

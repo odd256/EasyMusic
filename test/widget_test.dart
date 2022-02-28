@@ -1,3 +1,9 @@
+/*
+ * @Creator: Odd
+ * @Date: 2022-02-05 03:56:00
+ * @LastEditTime: 2022-03-01 02:44:54
+ * @FilePath: \flutter_music_player\test\widget_test.dart
+ */
 // This is a basic Flutter widget test.
 //
 // To perform an interaction with a widget in your test, use the WidgetTester
@@ -13,7 +19,7 @@ import 'package:flutter_music_player/main.dart';
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+    // await tester.pumpWidget(MyApp());
 
     // Verify that our counter starts at 0.
     expect(find.text('0'), findsOneWidget);
