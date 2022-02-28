@@ -134,7 +134,7 @@ class _LoginPageState extends State<LoginPage> {
         ),
         TextField(
           decoration: const InputDecoration(
-              prefixIcon: Icon(Icons.phone_android), labelText: '手机号'),
+              prefixIcon: Icon(Icons.phone_android_rounded), labelText: '手机号'),
           keyboardType: TextInputType.phone,
           controller: _phoneController,
           autofocus: true,
@@ -179,7 +179,7 @@ class _LoginPageState extends State<LoginPage> {
                               });
                             },
                             icon: const Icon(
-                              Icons.edit,
+                              Icons.edit_rounded,
                               size: 16,
                             )),
                       ],
@@ -196,7 +196,7 @@ class _LoginPageState extends State<LoginPage> {
         ),
         TextField(
           decoration: const InputDecoration(
-              prefixIcon: Icon(Icons.check_circle), labelText: '验证码'),
+              prefixIcon: Icon(Icons.check_circle_rounded), labelText: '验证码'),
           keyboardType: TextInputType.number,
           controller: _codeController,
           autofocus: true,

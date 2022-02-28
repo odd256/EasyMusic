@@ -90,7 +90,7 @@ class _SearchPageState extends State<SearchPage> {
                 focusedBorder: OutlineInputBorder(
                     borderSide:
                         BorderSide(color: Colors.transparent, width: 0)),
-                icon: Icon(Icons.search, color: Colors.black,)),
+                icon: Icon(Icons.search_rounded, color: Colors.black,)),
           ),
         ),
       ),

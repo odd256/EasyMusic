@@ -1,7 +1,7 @@
 /*
  * @Creator: Odd
  * @Date: 2022-02-27 19:03:22
- * @LastEditTime: 2022-02-28 00:08:38
+ * @LastEditTime: 2022-03-01 01:29:18
  * @FilePath: \flutter_music_player\lib\widgets\playlist_details.dart
  */
 import 'package:flutter/material.dart';
@@ -20,16 +20,21 @@ class PlaylistDetails extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          FadeInImage.memoryNetwork(
-              height: 170,
-              width: 170,
-              fit: BoxFit.fill,
-              placeholder: kTransparentImage,
-              image: playlistInfo.coverImgUrl),
+          Container(
+            height: 170,
+            width: 170,
+            decoration: BoxDecoration(
+                boxShadow: const [
+                  BoxShadow(color: Colors.black12, blurRadius: 10.0)
+                ],
+                borderRadius: BorderRadius.circular(12),
+                image: DecorationImage(
+                    image: NetworkImage(playlistInfo.coverImgUrl))),
+          ),
           Container(
             width: 200,
             height: 170,
-            padding: const EdgeInsets.only(left: 12),
+            padding: const EdgeInsets.only(left: 18),
             child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 crossAxisAlignment: CrossAxisAlignment.start,

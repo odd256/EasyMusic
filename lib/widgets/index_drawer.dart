@@ -1,7 +1,7 @@
 /*
  * @Creator: Odd
  * @Date: 2022-02-28 14:48:41
- * @LastEditTime: 2022-02-28 16:54:50
+ * @LastEditTime: 2022-03-01 01:37:41
  * @FilePath: \flutter_music_player\lib\widgets\index_drawer.dart
  */
 import 'package:flutter/material.dart';
@@ -36,12 +36,12 @@ class IndexDrawer extends StatelessWidget {
               borderRadius: BorderRadius.circular(20),
               child: Column(
                 children: [
-                  _buildListTile('关于', Icons.announcement,
+                  _buildListTile('关于', Icons.announcement_rounded,
                       onTapAction: onAbout),
-                  _buildListTile('设置', Icons.settings, onTapAction: onSetting),
+                  _buildListTile('设置', Icons.settings_rounded, onTapAction: onSetting),
                   _buildListTile('账号', Icons.person_add,
                       onTapAction: onAccount),
-                  _buildListTile('登出', Icons.logout, onTapAction: onLogout),
+                  _buildListTile('登出', Icons.logout_rounded, onTapAction: onLogout),
                 ],
               ),
             ),

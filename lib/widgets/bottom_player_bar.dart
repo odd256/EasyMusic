@@ -49,7 +49,7 @@ class _BottomPlayerBarState extends State<BottomPlayerBar> {
                 width: 70,
                 child: sequence?.isEmpty ?? true
                     ? const Icon(
-                        Icons.album,
+                        Icons.album_rounded,
                         size: 50,
                       )
                     : CachedNetworkImage(imageUrl: metadata.song.album.picUrl)),
@@ -96,26 +96,26 @@ class _BottomPlayerBarState extends State<BottomPlayerBar> {
                     const CircularProgressIndicator()
                   else if (playing != true)
                     IconButton(
-                      icon: const Icon(Icons.play_arrow),
+                      icon: const Icon(Icons.play_arrow_rounded),
                       onPressed: sequence?.isEmpty ?? true
                           ? null
                           : _playerManager.play,
                     )
                   else if (processingState != ProcessingState.completed)
                     IconButton(
-                      icon: const Icon(Icons.pause),
+                      icon: const Icon(Icons.pause_rounded),
                       onPressed: _playerManager.pause,
                     )
                   else
                     IconButton(
-                      icon: const Icon(Icons.replay),
+                      icon: const Icon(Icons.replay_rounded),
                       onPressed: () => _playerManager.seek(Duration.zero),
                     ),
                   IconButton(
                       onPressed: () {
                         // TODO: 在这里显示播放列表
                       },
-                      icon: const Icon(Icons.view_list)),
+                      icon: const Icon(Icons.view_list_rounded)),
                 ],
               ),
             ),

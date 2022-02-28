@@ -48,8 +48,10 @@ dependencies:
   flutter_screenutil: ^5.1.1 # 屏幕适配
   cached_network_image: ^3.2.0 # 图片缓存
   transparent_image: ^2.0.0 # 占位图
+  animations: ^2.0.2 # 动画
   # path: ^1.8.1 # 添加对路径的操作
 #  palette_generator: ^0.3.3 # 取色工具
+# simple_animations: ^4.0.1 # 动画
 
 dev_dependencies:
   flutter_test:

@@ -61,7 +61,7 @@ class _IndexPageState extends State<IndexPage> {
             prototypeItem: const ListTile(
               title: Text(''),
               subtitle: Text(''),
-              leading: Icon(Icons.print),
+              leading: Icon(Icons.print_rounded),
             ),
           )
         ],
@@ -223,7 +223,7 @@ class IndexListTile extends StatelessWidget {
         width: 55,
         progressIndicatorBuilder: (c, u, d) =>
             LinearProgressIndicator(value: d.progress),
-        errorWidget: (c, u, e) => const Icon(Icons.error),
+        errorWidget: (c, u, e) => const Icon(Icons.error_rounded),
         imageBuilder: (context, imageProvider) => Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),

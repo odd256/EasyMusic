@@ -174,7 +174,7 @@ class _PlayListPageState extends State<PlayListPage> {
                   prototypeItem: const ListTile(
                     title: Text(''),
                     subtitle: Text(''),
-                    leading: Icon(Icons.print),
+                    leading: Icon(Icons.print_rounded),
                   ),
                 ),
         ],

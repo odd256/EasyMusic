@@ -1,3 +1,9 @@
+/*
+ * @Creator: Odd
+ * @Date: 2022-02-26 03:46:55
+ * @LastEditTime: 2022-03-01 01:41:59
+ * @FilePath: \flutter_music_player\lib\widgets\music_player_controller.dart
+ */
 import 'package:flutter/material.dart';
 import 'package:flutter_music_player/widgets/player_widget.dart';
 
@@ -16,35 +22,52 @@ class _MusicPlayerControllerState extends State<MusicPlayerController> {
         iconTheme: const IconThemeData(color: Colors.white, size: 57),
       ),
       child: SizedBox(
-        height: 120,
+        height: 140,
         child: Column(
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 PlayerWidget(
+                    onPressed: () {},
+                    icon: const Icon(Icons.skip_previous_rounded)),
+                PlayerWidget(
+                    onPressed: () {},
+                    icon: const Icon(Icons.play_arrow_rounded)),
+                PlayerWidget(
+                    onPressed: () {},
+                    icon: const Icon(Icons.skip_next_rounded)),
+              ],
+            ),
+            const SizedBox(height: 10),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                PlayerWidget(
                   onPressed: () {},
                   icon: const Icon(
-                    Icons.repeat,
+                    Icons.repeat_rounded,
                     size: 30,
                   ),
                 ),
-                const SizedBox(
-                  width: 20,
-                ),
                 PlayerWidget(
-                    onPressed: () {}, icon: const Icon(Icons.skip_previous)),
-                PlayerWidget(
-                    onPressed: () {}, icon: const Icon(Icons.play_arrow)),
-                PlayerWidget(
-                    onPressed: () {}, icon: const Icon(Icons.skip_next)),
-                const SizedBox(
-                  width: 20,
+                  onPressed: () {},
+                  icon: const Icon(
+                    Icons.alarm_rounded,
+                    size: 30,
+                  ),
                 ),
                 PlayerWidget(
                   onPressed: () {},
                   icon: const Icon(
-                    Icons.view_list_outlined,
+                    Icons.favorite_rounded,
+                    size: 30,
+                  ),
+                ),
+                PlayerWidget(
+                  onPressed: () {},
+                  icon: const Icon(
+                    Icons.more_vert_rounded,
                     size: 30,
                   ),
                 ),
