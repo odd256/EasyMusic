@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -14,10 +12,8 @@ import 'package:flutter_music_player/widgets/index_drawer.dart';
 import 'package:flutter_music_player/widgets/index_header.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_music_player/pages/login.dart';
-import 'package:flutter_music_player/pages/search.dart';
 import 'package:flutter_music_player/widgets/bottom_player_bar.dart';
 import 'package:sp_util/sp_util.dart';
-import 'package:transparent_image/transparent_image.dart';
 
 class IndexPage extends StatefulWidget {
   const IndexPage({Key? key}) : super(key: key);
@@ -37,84 +33,25 @@ class _IndexPageState extends State<IndexPage> {
 
   late HttpManager _httpManager; // http管理器
 
-  AudioPlayerManager audioPlayerManager = AudioPlayerManager.getInstance()!; // 音频播放管理器
+  AudioPlayerManager audioPlayerManager =
+      AudioPlayerManager.getInstance()!; // 音频播放管理器
 
   //显示歌单
-  _buildIndexPage(onTop) => CustomScrollView(
+  _buildIndexPage(User u) => CustomScrollView(
         controller: _controller,
         physics: const BouncingScrollPhysics(),
         slivers: [
-          SliverAppBar(
-            pinned: true,
-            stretch: true,
-            // 滑动到顶端时会固定住
-            actions: [
-              IconButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    CupertinoPageRoute(builder: (context) {
-                      return const SearchPage();
-                    }),
-                  );
-                },
-                icon: const Icon(Icons.search_rounded),
-              )
-            ],
-            expandedHeight: 300.0,
-            flexibleSpace: FlexibleSpaceBar(
-              centerTitle: true,
-              title: onTop,
-              titlePadding: const EdgeInsets.all(0),
-              stretchModes: const [StretchMode.zoomBackground],
-              background: context.watch<User>().isLogin
-                  ? FadeInImage.memoryNetwork(
-                      fit: BoxFit.cover,
-                      height: double.infinity,
-                      width: double.infinity,
-                      placeholder: kTransparentImage,
-                      image: context.watch<User>().backgroundUrl)
-                  : Container(
-                      color: Colors.white,
-                    ),
-            ),
+          IndexHeader(
+            user: u,
+            showBlur: showBlur,
+            onTapUserInfo: () => onTapUserInfo(u),
           ),
           SliverPrototypeExtentList(
             delegate: SliverChildBuilderDelegate(
                 (c, i) => KeepAliveWrapper(
                       keepAlive: true,
-                      child: ListTile(
-                        onTap: () {
-                          //点击进入歌单列表
-                          Navigator.push(
-                              context,
-                              CupertinoPageRoute(
-                                  builder: (context) => PlayListPage(
-                                        title: '歌单详情',
-                                        playList: _playList[i],
-                                      )));
-                        },
-                        title: Text(
-                          _playList[i].name,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        leading: CachedNetworkImage(
-                          imageUrl: _playList[i].coverImgUrl,
-                          width: 55,
-                          progressIndicatorBuilder: (c, u, d) =>
-                              LinearProgressIndicator(value: d.progress),
-                          errorWidget: (c, u, e) => const Icon(Icons.error),
-                          imageBuilder: (context, imageProvider) => Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              image: DecorationImage(
-                                image: imageProvider,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
-                        ),
-                        subtitle: Text('${_playList[i].trackCount} 首'),
+                      child: IndexListTile(
+                        playList: _playList[i],
                       ),
                     ),
                 childCount: _playList.length),
@@ -160,16 +97,25 @@ class _IndexPageState extends State<IndexPage> {
     }
   }
 
+  onTapUserInfo(User user) {
+    if (user.isLogin) {
+      MsgUtil.primary('用户已登录');
+    } else {
+      Navigator.push(
+          context, CupertinoPageRoute(builder: (c) => const LoginPage()));
+    }
+  }
+
   onAccount(User u) {
     if (!u.isLogin) {
       Navigator.push(context, MaterialPageRoute(builder: (c) {
         return const LoginPage();
       })).then((value) {
-        if(value == 'success'){
+        if (value == 'success') {
           Navigator.pop(context);
         }
       });
-      
+
       // Navigator.pop(context);
     }
   }
@@ -223,70 +169,6 @@ class _IndexPageState extends State<IndexPage> {
     ///显示用户的名称
     ///显示用户的头像
     ///显示用户的id
-    // var onTop = InkWell(
-    //   onTap: () {
-    //     if (u.isLogin) {
-    //       MsgUtil.primary('用户已登录');
-    //     } else {
-    //       Navigator.push(
-    //           context, CupertinoPageRoute(builder: (c) => const LoginPage()));
-    //     }
-    //   },
-    //   child: ClipRRect(
-    //     borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-    //     child: BackdropFilter(
-    //       filter: showBlur
-    //           ? ImageFilter.blur(sigmaX: 20, sigmaY: 20)
-    //           : ImageFilter.blur(sigmaX: 0, sigmaY: 0),
-    //       child: Container(
-    //         color: Colors.white.withOpacity(0.3),
-    //         padding: const EdgeInsets.fromLTRB(50, 8, 50, 8),
-    //         child: Row(
-    //           mainAxisAlignment: MainAxisAlignment.center,
-    //           crossAxisAlignment: CrossAxisAlignment.center,
-    //           children: [
-    //             CircleAvatar(
-    //               radius: 15,
-    //               foregroundImage: u.isLogin ? NetworkImage(u.avatarUrl) : null,
-    //               child: u.isLogin
-    //                   ? null
-    //                   : const Text(
-    //                       '登录',
-    //                       style: TextStyle(fontSize: 11),
-    //                     ),
-    //             ),
-    //             Container(
-    //               margin: const EdgeInsets.only(left: 8),
-    //               height: 40,
-    //               child: Column(
-    //                 mainAxisAlignment: MainAxisAlignment.center,
-    //                 crossAxisAlignment: CrossAxisAlignment.start,
-    //                 children: [
-    //                   Text(
-    //                     u.uname,
-    //                     style: const TextStyle(
-    //                         color: Colors.black,
-    //                         fontSize: 14,
-    //                         fontWeight: FontWeight.w400),
-    //                     overflow: TextOverflow.ellipsis,
-    //                   ),
-    //                   Text(
-    //                     'id: ${u.id}',
-    //                     style: const TextStyle(
-    //                         color: Colors.black,
-    //                         fontSize: 10,
-    //                         fontWeight: FontWeight.w300),
-    //                     overflow: TextOverflow.ellipsis,
-    //                   ),
-    //                 ],
-    //               ),
-    //             )
-    //           ],
-    //         ),
-    //       ),
-    //     ),
-    //   ),
-    // );
     //用户歌单更新
     if (u.isLogin) _getUserPlayList(u.id);
     return WillPopScope(
@@ -307,7 +189,7 @@ class _IndexPageState extends State<IndexPage> {
           onLogout: () => onLogout(u),
           onAccount: () => onAccount(u),
         ),
-        body: _buildIndexPage(IndexHeader(user: u, showBlur: showBlur)),
+        body: _buildIndexPage(u),
         bottomNavigationBar: const BottomPlayerBar(),
       ),
     );
@@ -317,5 +199,48 @@ class _IndexPageState extends State<IndexPage> {
   void dispose() {
     super.dispose();
     _controller.dispose();
+  }
+}
+
+class IndexListTile extends StatelessWidget {
+  final PlayList playList;
+
+  const IndexListTile({Key? key, required this.playList}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      onTap: () {
+        //点击进入歌单列表
+        Navigator.push(
+            context,
+            CupertinoPageRoute(
+                builder: (context) => PlayListPage(
+                      title: '歌单详情',
+                      playList: playList,
+                    )));
+      },
+      title: Text(
+        playList.name,
+        overflow: TextOverflow.ellipsis,
+      ),
+      leading: CachedNetworkImage(
+        imageUrl: playList.coverImgUrl,
+        width: 55,
+        progressIndicatorBuilder: (c, u, d) =>
+            LinearProgressIndicator(value: d.progress),
+        errorWidget: (c, u, e) => const Icon(Icons.error),
+        imageBuilder: (context, imageProvider) => Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            image: DecorationImage(
+              image: imageProvider,
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+      ),
+      subtitle: Text('${playList.trackCount} 首'),
+    );
   }
 }
