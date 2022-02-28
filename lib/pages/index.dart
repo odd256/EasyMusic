@@ -10,6 +10,8 @@ import 'package:flutter_music_player/utils/audio_player_manager.dart';
 import 'package:flutter_music_player/utils/http_manager.dart';
 import 'package:flutter_music_player/utils/keep_alive_wrapper.dart';
 import 'package:flutter_music_player/utils/msg_util.dart';
+import 'package:flutter_music_player/widgets/index_drawer.dart';
+import 'package:flutter_music_player/widgets/index_header.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_music_player/pages/login.dart';
 import 'package:flutter_music_player/pages/search.dart';
@@ -35,27 +37,7 @@ class _IndexPageState extends State<IndexPage> {
 
   late HttpManager _httpManager; // http管理器
 
-  AudioPlayerManager audioPlayerManager = AudioPlayerManager.getInstance()!;
-
-  //左侧设置栏
-  _buildListTile(String title, IconData icon, [onTap]) => ListTile(
-        onTap: onTap,
-        leading: Icon(icon),
-        title: Text(title),
-      );
-
-  //构建左侧设置栏
-  _buildListColumn(List<Widget> items) => Container(
-        decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
-        margin: const EdgeInsets.fromLTRB(15, 7, 15, 7),
-        child: Material(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(20),
-          child: Column(
-            children: items,
-          ),
-        ),
-      );
+  AudioPlayerManager audioPlayerManager = AudioPlayerManager.getInstance()!; // 音频播放管理器
 
   //显示歌单
   _buildIndexPage(onTop) => CustomScrollView(
@@ -178,6 +160,39 @@ class _IndexPageState extends State<IndexPage> {
     }
   }
 
+  onAccount(User u) {
+    if (!u.isLogin) {
+      Navigator.push(context, MaterialPageRoute(builder: (c) {
+        return const LoginPage();
+      })).then((value) {
+        if(value == 'success'){
+          Navigator.pop(context);
+        }
+      });
+      
+      // Navigator.pop(context);
+    }
+  }
+
+  onLogout(User u) {
+    MsgUtil.confirm(context, msg: '确定要退出吗？', onConfirm: () async {
+      Navigator.pop(context);
+      if (u.isLogin) {
+        //退出成功
+        User u = User();
+        context.read<User>().updateUser(u);
+        setState(() {
+          _playList = [];
+        });
+        //清除所有的信息
+        SpUtil.clear();
+        MsgUtil.primary('退出成功');
+      } else {
+        MsgUtil.warn(msg: '你还没登陆呢');
+      }
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -208,74 +223,72 @@ class _IndexPageState extends State<IndexPage> {
     ///显示用户的名称
     ///显示用户的头像
     ///显示用户的id
-    var onTop = InkWell(
-      onTap: () {
-        if (u.isLogin) {
-          MsgUtil.primary('用户已登录');
-        } else {
-          Navigator.push(
-              context, CupertinoPageRoute(builder: (c) => const LoginPage()));
-        }
-      },
-      child: ClipRRect(
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-        child: BackdropFilter(
-          filter: showBlur
-              ? ImageFilter.blur(sigmaX: 20, sigmaY: 20)
-              : ImageFilter.blur(sigmaX: 0, sigmaY: 0),
-          child: Container(
-            color: Colors.white.withOpacity(0.3),
-            padding: const EdgeInsets.fromLTRB(50, 8, 50, 8),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                CircleAvatar(
-                  radius: 15,
-                  foregroundImage: u.isLogin ? NetworkImage(u.avatarUrl) : null,
-                  child: u.isLogin
-                      ? null
-                      : const Text(
-                          '登录',
-                          style: TextStyle(fontSize: 11),
-                        ),
-                ),
-                Container(
-                  margin: const EdgeInsets.only(left: 8),
-                  height: 40,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        u.uname,
-                        style: const TextStyle(
-                            color: Colors.black,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w400),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      Text(
-                        'id: ${u.id}',
-                        style: const TextStyle(
-                            color: Colors.black,
-                            fontSize: 10,
-                            fontWeight: FontWeight.w300),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
-                  ),
-                )
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
+    // var onTop = InkWell(
+    //   onTap: () {
+    //     if (u.isLogin) {
+    //       MsgUtil.primary('用户已登录');
+    //     } else {
+    //       Navigator.push(
+    //           context, CupertinoPageRoute(builder: (c) => const LoginPage()));
+    //     }
+    //   },
+    //   child: ClipRRect(
+    //     borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+    //     child: BackdropFilter(
+    //       filter: showBlur
+    //           ? ImageFilter.blur(sigmaX: 20, sigmaY: 20)
+    //           : ImageFilter.blur(sigmaX: 0, sigmaY: 0),
+    //       child: Container(
+    //         color: Colors.white.withOpacity(0.3),
+    //         padding: const EdgeInsets.fromLTRB(50, 8, 50, 8),
+    //         child: Row(
+    //           mainAxisAlignment: MainAxisAlignment.center,
+    //           crossAxisAlignment: CrossAxisAlignment.center,
+    //           children: [
+    //             CircleAvatar(
+    //               radius: 15,
+    //               foregroundImage: u.isLogin ? NetworkImage(u.avatarUrl) : null,
+    //               child: u.isLogin
+    //                   ? null
+    //                   : const Text(
+    //                       '登录',
+    //                       style: TextStyle(fontSize: 11),
+    //                     ),
+    //             ),
+    //             Container(
+    //               margin: const EdgeInsets.only(left: 8),
+    //               height: 40,
+    //               child: Column(
+    //                 mainAxisAlignment: MainAxisAlignment.center,
+    //                 crossAxisAlignment: CrossAxisAlignment.start,
+    //                 children: [
+    //                   Text(
+    //                     u.uname,
+    //                     style: const TextStyle(
+    //                         color: Colors.black,
+    //                         fontSize: 14,
+    //                         fontWeight: FontWeight.w400),
+    //                     overflow: TextOverflow.ellipsis,
+    //                   ),
+    //                   Text(
+    //                     'id: ${u.id}',
+    //                     style: const TextStyle(
+    //                         color: Colors.black,
+    //                         fontSize: 10,
+    //                         fontWeight: FontWeight.w300),
+    //                     overflow: TextOverflow.ellipsis,
+    //                   ),
+    //                 ],
+    //               ),
+    //             )
+    //           ],
+    //         ),
+    //       ),
+    //     ),
+    //   ),
+    // );
     //用户歌单更新
-    if (u.isLogin) {
-      _getUserPlayList(u.id);
-    }
+    if (u.isLogin) _getUserPlayList(u.id);
     return WillPopScope(
       onWillPop: () async {
         if (_lastPressedAt == null ||
@@ -290,43 +303,11 @@ class _IndexPageState extends State<IndexPage> {
       },
       child: Scaffold(
         drawerEdgeDragWidth: 100,
-        drawer: Drawer(
-          backgroundColor: const Color(0xFFF5F5F5),
-          child: ListView(
-            children: [
-              _buildListColumn([
-                _buildListTile('关于', Icons.announcement),
-                _buildListTile('设置', Icons.settings),
-                _buildListTile('账号', Icons.person_add, () {
-                  if (!u.isLogin) {
-                    Navigator.push(context, MaterialPageRoute(builder: (c) {
-                      return const LoginPage();
-                    }));
-                  }
-                }),
-                _buildListTile('登出', Icons.logout, () {
-                  MsgUtil.confirm(context, msg: '确定要退出吗？', onConfirm: () async {
-                    Navigator.pop(context);
-                    if (u.isLogin) {
-                        //退出成功
-                        User u = User();
-                        context.read<User>().updateUser(u);
-                        setState(() {
-                          _playList = [];
-                        });
-                        //清除所有的信息
-                        SpUtil.clear();
-                        MsgUtil.primary('退出成功');
-                    } else {
-                      MsgUtil.warn(msg: '你还没登陆呢');
-                    }
-                  });
-                }),
-              ]),
-            ],
-          ),
+        drawer: IndexDrawer(
+          onLogout: () => onLogout(u),
+          onAccount: () => onAccount(u),
         ),
-        body: _buildIndexPage(onTop),
+        body: _buildIndexPage(IndexHeader(user: u, showBlur: showBlur)),
         bottomNavigationBar: const BottomPlayerBar(),
       ),
     );

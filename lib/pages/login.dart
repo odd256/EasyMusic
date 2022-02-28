@@ -81,10 +81,12 @@ class _LoginPageState extends State<LoginPage> {
         User user = User.fromJson(data);
         context.read<User>().updateUser(user); //更新user信息
         SpUtil.putObject('user', user);
-        //TODO: 这里有严重的内存泄露问题！
-        Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (_) => const IndexPage()),
-            (route) => false);
+        // Navigator.of(context).pushAndRemoveUntil(
+        //     MaterialPageRoute(builder: (_) => const IndexPage()),
+        //     (route) => false);
+        Navigator.popUntil(context, (route){
+          return route.isFirst;
+        });
         // Navigator.of(context).popUntil((route) => route.settings.name == 'index');
       } else {
         if (data['message'] != null) {
@@ -92,6 +94,7 @@ class _LoginPageState extends State<LoginPage> {
         }
       }
     } catch (e) {
+      print(e);
       MsgUtil.primary("登录失败");
     }
   }
