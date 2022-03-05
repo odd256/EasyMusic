@@ -23,10 +23,10 @@ class _BottomPlayerBarState extends State<BottomPlayerBar> {
 
   @override
   Widget build(BuildContext context) {
-    onPressMusicBar(song) {
+    onPressMusicBar() {
       // TODO: 进入音乐播放页面
       Navigator.push(
-          context, MaterialPageRoute(builder: (_) => MusicPage(song)));
+          context, MaterialPageRoute(builder: (_) => const MusicPage()));
     }
 
     return Consumer2<PlayerState, SequenceState?>(
@@ -84,7 +84,7 @@ class _BottomPlayerBarState extends State<BottomPlayerBar> {
               child: SizedBox(
                   height: 70,
                   child: InkWell(
-                    onTap: sequence?.isEmpty ?? true ? null : (){onPressMusicBar(metadata);},
+                    onTap: sequence?.isEmpty ?? true ? null : onPressMusicBar,
                   )),
             ),
             Positioned(
@@ -109,7 +109,7 @@ class _BottomPlayerBarState extends State<BottomPlayerBar> {
                   else
                     IconButton(
                       icon: const Icon(Icons.replay_rounded),
-                      onPressed: () => _playerManager.seek(Duration.zero),
+                      onPressed: _playerManager.seek(Duration.zero),
                     ),
                   IconButton(
                       onPressed: () {

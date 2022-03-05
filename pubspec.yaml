@@ -36,7 +36,7 @@ dependencies:
   cupertino_icons: ^1.0.2
 
   # ---音乐播放支持---
-  # audio_service: ^0.18.4 # 系统通知栏提醒
+  audio_service: ^0.18.4 # 系统通知栏提醒
   audio_session: ^0.1.6+1 # 定义音频的含义，音效/音乐/提醒...
   just_audio: ^0.9.20 # 音乐播放器
   # -----------------

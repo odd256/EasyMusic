@@ -65,19 +65,21 @@ class _PlayListPageState extends State<PlayListPage> {
             '/playlist/detail?id=${widget.playList.id}&cookie=${context.read<User>().cookie}',
             cancelToken: _token);
         if (data != null && data['code'] == 200) {
+          final List<Song> tmpList = [];
           setState(() {
-            _songs = data['playlist']['tracks'].map<AudioSource>((e) {
+            _songs = data['playlist']['tracks'].map<UriAudioSource>((e) {
               final Album al = Album.fromJson(e['al']);
               final List<Artist> ar =
                   e['ar'].map<Artist>((v) => Artist.fromJson(v)).toList();
               final tmp = Song.fromJson(e, ar, al);
+              tmpList.add(tmp);
               return AudioSource.uri(
                   Uri.parse(
                       'https://music.163.com/song/media/outer/url?id=${tmp.id}.mp3'),
                   tag: tmp);
             }).toList();
             //缓存
-            SpUtil.putObjectList('playListSongs${widget.playList.id}', _songs);
+            SpUtil.putObjectList('playListSongs${widget.playList.id}', tmpList);
           });
         }
       } catch (e) {
