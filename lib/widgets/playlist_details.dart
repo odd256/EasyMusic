@@ -6,7 +6,6 @@
  */
 import 'package:flutter/material.dart';
 import 'package:flutter_music_player/models/play_list.dart';
-import 'package:transparent_image/transparent_image.dart';
 
 class PlaylistDetails extends StatelessWidget {
   final PlayList playlistInfo;

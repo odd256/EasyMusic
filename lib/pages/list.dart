@@ -13,6 +13,7 @@ import 'package:flutter_music_player/utils/audio_player_manager.dart';
 import 'package:flutter_music_player/utils/http_manager.dart';
 import 'package:flutter_music_player/widgets/playlist_details.dart';
 import 'package:flutter_music_player/widgets/bottom_player_bar.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:provider/provider.dart';
 import 'package:sp_util/sp_util.dart';
 import 'package:transparent_image/transparent_image.dart';
@@ -30,7 +31,7 @@ class PlayListPage extends StatefulWidget {
 }
 
 class _PlayListPageState extends State<PlayListPage> {
-  List<Song> _songs = [];
+  List<UriAudioSource> _songs = [];
   late final HttpManager _httpManager;
 
   late final AudioPlayerManager _playerManager;
@@ -44,10 +45,15 @@ class _PlayListPageState extends State<PlayListPage> {
     bool? isCached = SpUtil.haveKey('playListSongs${widget.playList.id}');
     if (isCached == true) {
       //从缓存中获取
-      var s = SpUtil.getObjList<Song>('playListSongs${widget.playList.id}', (v) {
+      var s = SpUtil.getObjList<UriAudioSource>(
+          'playListSongs${widget.playList.id}', (v) {
         List<Artist> artists =
             v['artist'].map<Artist>((e) => Artist.fromJson(e))?.toList();
-        return Song.fromJson(v, artists, Album.fromJson(v['album']));
+        final tmp = Song.fromJson(v, artists, Album.fromJson(v['album']));
+        return AudioSource.uri(
+            Uri.parse(
+                'https://music.163.com/song/media/outer/url?id=${tmp.id}.mp3'),
+            tag: tmp);
       })!;
       setState(() {
         _songs = s;
@@ -60,11 +66,15 @@ class _PlayListPageState extends State<PlayListPage> {
             cancelToken: _token);
         if (data != null && data['code'] == 200) {
           setState(() {
-            _songs = data['playlist']['tracks'].map<Song>((e) {
+            _songs = data['playlist']['tracks'].map<AudioSource>((e) {
               final Album al = Album.fromJson(e['al']);
               final List<Artist> ar =
                   e['ar'].map<Artist>((v) => Artist.fromJson(v)).toList();
-              return Song.fromJson(e, ar, al);
+              final tmp = Song.fromJson(e, ar, al);
+              return AudioSource.uri(
+                  Uri.parse(
+                      'https://music.163.com/song/media/outer/url?id=${tmp.id}.mp3'),
+                  tag: tmp);
             }).toList();
             //缓存
             SpUtil.putObjectList('playListSongs${widget.playList.id}', _songs);
@@ -79,10 +89,13 @@ class _PlayListPageState extends State<PlayListPage> {
   //播放歌曲
   playMusic(i) async {
     if (firstPlay) {
-      _playerManager.playlist = _songs;
+      await _playerManager.playlist.clear().then((value) => _playerManager.playlist
+          .addAll(_songs)
+          .then((value) => _playerManager.play(index: i)));
       firstPlay = false;
+    } else {
+      _playerManager.play(index: i);
     }
-    _playerManager.play(index: i);
   }
 
   @override
@@ -156,7 +169,7 @@ class _PlayListPageState extends State<PlayListPage> {
                               playMusic(i);
                             },
                             title: Text(
-                              _songs[i].name,
+                              _songs[i].tag.name,
                               overflow: TextOverflow.ellipsis,
                             ),
                             leading: SizedBox(
@@ -168,7 +181,7 @@ class _PlayListPageState extends State<PlayListPage> {
                               height: 50,
                               width: 50,
                             ),
-                            subtitle: Text(_songs[i].showArtist()),
+                            subtitle: Text(_songs[i].tag.showArtist()),
                           ),
                       childCount: _songs.length),
                   prototypeItem: const ListTile(

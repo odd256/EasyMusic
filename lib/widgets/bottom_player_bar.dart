@@ -52,7 +52,7 @@ class _BottomPlayerBarState extends State<BottomPlayerBar> {
                         Icons.album_rounded,
                         size: 50,
                       )
-                    : CachedNetworkImage(imageUrl: metadata.song.album.picUrl)),
+                    : CachedNetworkImage(imageUrl: metadata.album.picUrl)),
             Positioned(
               left: 90,
               child: SizedBox(
@@ -61,7 +61,7 @@ class _BottomPlayerBarState extends State<BottomPlayerBar> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        sequence?.isEmpty ?? true ? '' : metadata.song.name,
+                        sequence?.isEmpty ?? true ? '' : metadata.name,
                         style:
                             const TextStyle(fontSize: 20, color: Colors.black),
                         overflow: TextOverflow.ellipsis,
@@ -72,7 +72,7 @@ class _BottomPlayerBarState extends State<BottomPlayerBar> {
                       Text(
                         sequence?.isEmpty ?? true
                             ? ''
-                            : metadata.song.showArtist(),
+                            : metadata.showArtist(),
                         style: const TextStyle(color: Colors.black),
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -84,7 +84,7 @@ class _BottomPlayerBarState extends State<BottomPlayerBar> {
               child: SizedBox(
                   height: 70,
                   child: InkWell(
-                    onTap: sequence?.isEmpty ?? true ? null : (){onPressMusicBar(metadata.song);},
+                    onTap: sequence?.isEmpty ?? true ? null : (){onPressMusicBar(metadata);},
                   )),
             ),
             Positioned(

@@ -5,6 +5,7 @@ import 'package:flutter_music_player/models/song.dart';
 import 'package:flutter_music_player/utils/audio_player_manager.dart';
 import 'package:flutter_music_player/utils/http_manager.dart';
 import 'package:flutter_music_player/widgets/bottom_player_bar.dart';
+import 'package:just_audio/just_audio.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({Key? key}) : super(key: key);
@@ -14,7 +15,7 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
-  List<Song> _songs = [];
+  List<UriAudioSource> _songs = [];
   final HttpManager _httpManager = HttpManager.getInstance();
   final AudioPlayerManager _playerManager = AudioPlayerManager.getInstance()!;
 
@@ -29,19 +30,19 @@ class _SearchPageState extends State<SearchPage> {
           onTap: () async {
             //点击播放音乐
             //检查picUrl是否存在，不存在要获取
-            if (_songs[i].album?.picUrl == null) {
+            if (_songs[i].tag.album?.picUrl == null) {
               final ad = await _httpManager
-                  .get('/album?id=${_songs[i].album?.id}', withLoading: false);
+                  .get('/album?id=${_songs[i].tag.album?.id}', withLoading: false);
               if (ad['code'] == 200) {
-                _songs[i].album = Album.fromJson(ad['album']);
+                _songs[i].tag.album = Album.fromJson(ad['album']);
               }
             }
             _playerManager.playlist.add(_songs[i]);
             _playerManager.play(index: _playerManager.playlist.length - 1);
           },
-          title: Text(_songs[i].name),
+          title: Text(_songs[i].tag.name),
           // subtitle: Text(_songs[i].artist[0].name),
-          subtitle: Text(_songs[i].showArtist()),
+          subtitle: Text(_songs[i].tag.showArtist()),
         );
       },
       itemCount: _songs.length,
@@ -65,7 +66,7 @@ class _SearchPageState extends State<SearchPage> {
               //发送网络请求，搜索歌曲
               var data = await _httpManager.get('/search?keywords=$v');
               if (data['code'] == 200) {
-                List<Song> s = data['result']['songs'].map<Song>((e) {
+                var s = data['result']['songs'].map<UriAudioSource>((e) {
                   List<Artist> artist = e['artists']
                       .map<Artist>((q) => Artist.fromJson(q))
                       .toList();

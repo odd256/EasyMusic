@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_music_player/models/user.dart';
-import 'package:flutter_music_player/pages/index.dart';
 import 'package:flutter_music_player/utils/http_manager.dart';
 import 'package:flutter_music_player/utils/msg_util.dart';
 import 'package:sp_util/sp_util.dart';

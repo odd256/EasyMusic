@@ -1,12 +1,11 @@
 /*
  * @Creator: Odd
  * @Date: 2022-02-09 15:54:49
- * @LastEditTime: 2022-02-28 02:49:32
+ * @LastEditTime: 2022-03-05 02:09:23
  * @FilePath: \flutter_music_player\lib\models\play_list.dart
  */
 //歌单
 import 'package:flutter_music_player/models/user.dart';
-import 'package:sqflite/sqflite.dart';
 
 // const tablePlaylist = 'playlist';
 // const columnId = 'id';
