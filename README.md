@@ -4,7 +4,7 @@
  * @LastEditTime: 2022-02-28 16:58:47
  * @FilePath: \flutter_music_player\README.md
 -->
-# EasyMusic 简单音乐
+# EasyMusic 简单音乐 （目前仍在更新中...）
 
 - 项目是个[flutter](https://flutter.dev) 开发的音乐播放器
 - 目前是个:poop:山，第一次做比较大的开发，还在不断填坑中，见谅~
