@@ -1,36 +1,48 @@
 /*
  * @Creator: Odd
  * @Date: 2022-04-12 17:08:52
- * @LastEditTime: 2022-04-19 11:09:53
+ * @LastEditTime: 2022-04-19 23:58:47
  * @FilePath: \flutter_easymusic\lib\pages\home_page.dart
  */
 
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_easymusic/controllers/playlist_controller.dart';
 import 'package:flutter_easymusic/models/playlist.dart';
 import 'package:flutter_easymusic/pages/routes/app_routes.dart';
 import 'package:flutter_easymusic/services/playlist_state.dart';
 import 'package:flutter_easymusic/services/user_state.dart';
-import 'package:flutter_easymusic/utils/keep_alive_wrapper.dart';
 import 'package:get/get.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
 
-  _buildHomePage() {
+  _buildHomePage(context, scaffoldKey) {
     return CustomScrollView(
       controller: Get.find<PlaylistController>().scrollController,
       physics: const BouncingScrollPhysics(),
-      slivers: const [UserHeaderWidget(), PlaylistItemListWidget()],
+      slivers: [
+        SliverPersistentHeader(
+            pinned: true,
+            delegate: UserSliverHeaderDelegate(
+              scaffoldKey: scaffoldKey,
+              title: '我的歌单',
+              collapsedHeight: 40,
+              expandedHeight: 380,
+              paddingTop: MediaQuery.of(context).padding.top,
+            )),
+        const PlaylistItemListWidget()
+      ],
     );
   }
 
   @override
   Widget build(BuildContext context) {
     DateTime? _lastPressedAt; //上次点击时间
+    final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
     return WillPopScope(
       onWillPop: () async {
         if (_lastPressedAt == null ||
@@ -53,9 +65,10 @@ class HomePage extends StatelessWidget {
         return true;
       },
       child: Scaffold(
+        key: _scaffoldKey,
         drawerEdgeDragWidth: 150,
         drawer: const HomeDrawer(),
-        body: _buildHomePage(),
+        body: _buildHomePage(context, _scaffoldKey),
         // bottomNavigationBar: const BottomPlayerBar(),
       ),
     );
@@ -104,70 +117,60 @@ class HomeDrawer extends StatelessWidget {
   }
 }
 
-class UserHeaderWidget extends StatelessWidget {
-  const UserHeaderWidget({Key? key}) : super(key: key);
+class UserSliverAppBar extends StatelessWidget {
+  const UserSliverAppBar({Key? key}) : super(key: key);
 
-  _buildUserTitle(showBlur) {
+  _buildUserTitle() {
     final userState = Get.find<UserState>();
 
-    return Obx(() => InkWell(
-          onTap: () => userState.isLogin.value
-              ? Get.snackbar('提示', '用户已登录')
-              : Get.toNamed(AppRoutes.login),
-          child: ClipRRect(
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-            child: BackdropFilter(
-              filter: showBlur
-                  ? ImageFilter.blur(sigmaX: 20, sigmaY: 20)
-                  : ImageFilter.blur(sigmaX: 0, sigmaY: 0),
-              child: Container(
-                color: Colors.white.withOpacity(0.3),
-                padding: const EdgeInsets.fromLTRB(50, 8, 50, 8),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    CircleAvatar(
-                      radius: 15,
-                      foregroundImage: userState.isLogin.value
-                          ? NetworkImage(userState.user.value.avatarUrl)
-                          : null,
-                      child: userState.isLogin.value
-                          ? null
-                          : const Text(
-                              '登录',
-                              style: TextStyle(fontSize: 11),
-                            ),
-                    ),
-                    Container(
-                      margin: const EdgeInsets.only(left: 8),
-                      height: 40,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            userState.user.value.uname,
-                            style: const TextStyle(
-                                color: Colors.black,
-                                fontSize: 14,
-                                fontWeight: FontWeight.w400),
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          Text(
-                            'id: ${userState.user.value.id}',
-                            style: const TextStyle(
-                                color: Colors.black,
-                                fontSize: 10,
-                                fontWeight: FontWeight.w300),
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ],
-                      ),
-                    )
-                  ],
+    return Obx(() => ClipRRect(
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+          child: Container(
+            color: Colors.grey[50],
+            padding: const EdgeInsets.fromLTRB(50, 8, 50, 8),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                CircleAvatar(
+                  radius: 15,
+                  foregroundImage: userState.isLogin.value
+                      ? NetworkImage(userState.user.value.avatarUrl)
+                      : null,
+                  child: userState.isLogin.value
+                      ? null
+                      : const Text(
+                          '登录',
+                          style: TextStyle(fontSize: 11),
+                        ),
                 ),
-              ),
+                Container(
+                  margin: const EdgeInsets.only(left: 8),
+                  height: 40,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        userState.user.value.uname,
+                        style: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w400),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      Text(
+                        'id: ${userState.user.value.id}',
+                        style: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 10,
+                            fontWeight: FontWeight.w300),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                )
+              ],
             ),
           ),
         ));
@@ -191,7 +194,7 @@ class UserHeaderWidget extends StatelessWidget {
       expandedHeight: 300,
       flexibleSpace: Obx(() => FlexibleSpaceBar(
             centerTitle: true,
-            title: _buildUserTitle(true),
+            title: _buildUserTitle(),
             titlePadding: const EdgeInsets.all(0),
             stretchModes: const [StretchMode.zoomBackground],
             background: userState.isLogin.value
@@ -207,6 +210,200 @@ class UserHeaderWidget extends StatelessWidget {
           )),
     );
   }
+}
+
+class UserSliverHeaderDelegate extends SliverPersistentHeaderDelegate {
+  final double collapsedHeight;
+  final double expandedHeight;
+  final double paddingTop;
+  final String title;
+  final GlobalKey<ScaffoldState> scaffoldKey;
+  String statusBarMode = 'dark';
+  UserSliverHeaderDelegate({
+    required this.scaffoldKey,
+    required this.collapsedHeight,
+    required this.expandedHeight,
+    required this.paddingTop,
+    required this.title,
+  });
+
+  void updateStatusBarBrightness(shrinkOffset) {
+    if (shrinkOffset > 50 && statusBarMode == 'dark') {
+      statusBarMode = 'light';
+      SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+        statusBarBrightness: Brightness.light,
+        statusBarIconBrightness: Brightness.light,
+      ));
+    } else if (shrinkOffset <= 50 && statusBarMode == 'light') {
+      statusBarMode = 'dark';
+      SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+        statusBarBrightness: Brightness.dark,
+        statusBarIconBrightness: Brightness.dark,
+      ));
+    }
+  }
+
+  Color makeStickyHeaderBgColor(shrinkOffset) {
+    final int alpha =
+        (shrinkOffset / (maxExtent - minExtent) * 255).clamp(0, 255).toInt();
+    return Color.fromARGB(alpha, 255, 255, 255);
+  }
+
+  Color makeStickyHeaderTextColor(shrinkOffset, isIcon) {
+    if (shrinkOffset <= 50) {
+      return isIcon ? Colors.white : Colors.transparent;
+    } else {
+      final int alpha =
+          (shrinkOffset / (maxExtent - minExtent) * 255).clamp(0, 255).toInt();
+      return Color.fromARGB(alpha, 0, 0, 0);
+    }
+  }
+
+  _buildUserInfo() {
+    final userState = Get.find<UserState>();
+
+    return Obx(() => ClipRRect(
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+          child: Container(
+            color: Colors.grey[50],
+            padding: const EdgeInsets.fromLTRB(50, 8, 50, 8),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                CircleAvatar(
+                  radius: 15,
+                  foregroundImage: userState.isLogin.value
+                      ? NetworkImage(userState.user.value.avatarUrl)
+                      : null,
+                  child: userState.isLogin.value
+                      ? null
+                      : const Text(
+                          '登录',
+                          style: TextStyle(fontSize: 11),
+                        ),
+                ),
+                Container(
+                  margin: const EdgeInsets.only(left: 8),
+                  height: 40,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        userState.user.value.uname,
+                        style: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w400),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      Text(
+                        'id: ${userState.user.value.id}',
+                        style: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 10,
+                            fontWeight: FontWeight.w300),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                )
+              ],
+            ),
+          ),
+        ));
+  }
+
+  @override
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
+    updateStatusBarBrightness(shrinkOffset);
+    final userState = Get.find<UserState>();
+    return SizedBox(
+      height: maxExtent,
+      width: MediaQuery.of(context).size.width,
+      child: Stack(
+        fit: StackFit.expand,
+        children: <Widget>[
+          Image.network(userState.user.value.backgroundUrl, fit: BoxFit.cover),
+          Positioned(
+            left: 0,
+            top: maxExtent / 2,
+            right: 0,
+            bottom: 0,
+            child: Container(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Color(0x00000000),
+                    Color(0x90000000),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: _buildUserInfo(),
+          ),
+          Positioned(
+            left: 0,
+            right: 0,
+            top: 0,
+            child: Container(
+              color: makeStickyHeaderBgColor(shrinkOffset),
+              child: SafeArea(
+                bottom: false,
+                child: SizedBox(
+                  height: collapsedHeight,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      IconButton(
+                        icon: Icon(
+                          Icons.reorder_rounded,
+                          color: makeStickyHeaderTextColor(shrinkOffset, true),
+                        ),
+                        onPressed: () => scaffoldKey.currentState?.openDrawer(),
+                      ),
+                      Text(
+                        title,
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w500,
+                          color: makeStickyHeaderTextColor(shrinkOffset, false),
+                        ),
+                      ),
+                      IconButton(
+                        icon: Icon(
+                          Icons.search_rounded,
+                          color: makeStickyHeaderTextColor(shrinkOffset, true),
+                        ),
+                        onPressed: () {},
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  double get maxExtent => expandedHeight;
+
+  @override
+  double get minExtent => collapsedHeight + paddingTop;
+
+  @override
+  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) =>
+      true;
 }
 
 class PlaylistItemListWidget extends StatelessWidget {
@@ -237,11 +434,7 @@ class PlaylistItemListWidget extends StatelessWidget {
     final playListController = Get.find<PlaylistController>();
     return Obx(() => SliverPrototypeExtentList(
           delegate: SliverChildBuilderDelegate(
-              (c, i) => KeepAliveWrapper(
-                    keepAlive: true,
-                    child:
-                        _buildPlaylistListTile(playListController.playlists[i]),
-                  ),
+              (c, i) => _buildPlaylistListTile(playListController.playlists[i]),
               childCount: playListController.playlists.length),
           prototypeItem: const ListTile(
             title: Text(''),
