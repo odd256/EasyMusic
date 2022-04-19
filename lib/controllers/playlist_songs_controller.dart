@@ -1,7 +1,7 @@
 /*
  * @Creator: Odd
  * @Date: 2022-04-13 22:33:52
- * @LastEditTime: 2022-04-19 11:04:54
+ * @LastEditTime: 2022-04-19 11:22:23
  * @FilePath: \flutter_easymusic\lib\controllers\playlist_songs_controller.dart
  */
 import 'package:audio_service/audio_service.dart';
@@ -57,6 +57,7 @@ class PlaylistSongsController extends GetxController {
           title: s.name,
           album: s.album?.name,
           artist: ar.map((v) => v.name).join('/'),
+          artUri: Uri.parse(s.album?.picUrl ?? defaultImgUrl),
           extras: {
             'url': 'https://music.163.com/song/media/outer/url?id=${s.id}.mp3'
           });
