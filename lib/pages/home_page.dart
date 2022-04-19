@@ -1,16 +1,14 @@
 /*
  * @Creator: Odd
  * @Date: 2022-04-12 17:08:52
- * @LastEditTime: 2022-04-16 23:57:47
+ * @LastEditTime: 2022-04-19 11:09:53
  * @FilePath: \flutter_easymusic\lib\pages\home_page.dart
  */
 
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_easymusic/controllers/audio_controller.dart';
 import 'package:flutter_easymusic/controllers/playlist_controller.dart';
-import 'package:flutter_easymusic/controllers/playlist_songs_controller.dart';
 import 'package:flutter_easymusic/models/playlist.dart';
 import 'package:flutter_easymusic/pages/routes/app_routes.dart';
 import 'package:flutter_easymusic/services/playlist_state.dart';

@@ -1,20 +1,16 @@
 /*
  * @Creator: Odd
  * @Date: 2022-04-13 21:57:27
- * @LastEditTime: 2022-04-18 20:56:24
+ * @LastEditTime: 2022-04-19 11:10:06
  * @FilePath: \flutter_easymusic\lib\pages\playlist_songs_page.dart
  */
-import 'dart:developer';
 import 'dart:ui';
 
-import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easymusic/controllers/audio_controller.dart';
 import 'package:flutter_easymusic/controllers/playlist_songs_controller.dart';
 import 'package:flutter_easymusic/pages/routes/app_routes.dart';
 import 'package:flutter_easymusic/services/playlist_state.dart';
 import 'package:get/get.dart';
-import 'package:transparent_image/transparent_image.dart';
 
 class PlaylistSongsPage extends StatelessWidget {
   PlaylistSongsPage({Key? key}) : super(key: key);

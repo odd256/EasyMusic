@@ -1,10 +1,9 @@
 /*
  * @Creator: Odd
  * @Date: 2022-04-12 14:09:13
- * @LastEditTime: 2022-04-18 21:14:44
+ * @LastEditTime: 2022-04-19 11:09:43
  * @FilePath: \flutter_easymusic\lib\controllers\audio_controller.dart
  */
-import 'dart:developer';
 
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter_easymusic/models/creator.dart';
@@ -17,7 +16,6 @@ import 'package:get/get.dart';
 /// 每次状态更新 两者都要同时调用
 class AudioController extends GetxController {
   String currentSongTitle = '';
-  // var playlist = List<String>.empty();
   Playlist currentPlaylist =
       Playlist(0, '', '', 0, Creator(userId: 0, nickname: '', avatarUrl: ''));
 

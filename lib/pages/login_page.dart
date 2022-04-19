@@ -1,7 +1,7 @@
 /*
  * @Creator: Odd
  * @Date: 2022-04-12 20:17:42
- * @LastEditTime: 2022-04-13 03:04:58
+ * @LastEditTime: 2022-04-19 11:09:59
  * @FilePath: \flutter_easymusic\lib\pages\login_page.dart
  */
 import 'package:flutter/material.dart';
@@ -24,8 +24,8 @@ class LoginPage extends StatelessWidget {
         ),
       ),
       body: Obx(() => _userController.hasSend.value
-          ? CaptchaLoginPage()
-          : LoginPhonePage()),
+          ? const CaptchaLoginPage()
+          : const LoginPhonePage()),
     );
   }
 }

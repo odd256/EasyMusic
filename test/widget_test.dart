@@ -1,7 +1,7 @@
 /*
  * @Creator: Odd
  * @Date: 2022-04-10 21:01:33
- * @LastEditTime: 2022-04-12 16:20:35
+ * @LastEditTime: 2022-04-19 11:10:10
  * @FilePath: \flutter_easymusic\test\widget_test.dart
  */
 // This is a basic Flutter widget test.
@@ -13,8 +13,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import 'package:flutter_easymusic/main.dart';
 
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
