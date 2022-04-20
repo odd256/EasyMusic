@@ -1,7 +1,7 @@
 /*
  * @Creator: Odd
  * @Date: 2022-04-13 22:33:52
- * @LastEditTime: 2022-04-19 11:22:23
+ * @LastEditTime: 2022-04-20 16:22:15
  * @FilePath: \flutter_easymusic\lib\controllers\playlist_songs_controller.dart
  */
 import 'package:audio_service/audio_service.dart';
@@ -20,11 +20,11 @@ const String defaultImgUrl =
     'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Finews.gtimg.com%2Fnewsapp_bt%2F0%2F13633347286%2F1000.jpg&refer=http%3A%2F%2Finews.gtimg.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1652722376&t=dfc48d0e5d3cdf81ad0075013f89d710';
 
 class PlaylistSongsController extends GetxController {
-  // var mediaItems = List<MediaItem>.empty().obs;
   final audioController = Get.find<AudioController>();
   final playlistState = Get.find<PlaylistState>();
   final audioHandler = Get.find<AudioHandler>();
-  // final playlist = Playlist(0, '', '', 0, Creator(userId: 0, nickname: '', avatarUrl: '')).obs;
+
+  final onLoad = true.obs;
 
   @override
   void onInit() {
@@ -65,6 +65,7 @@ class PlaylistSongsController extends GetxController {
       return m;
     }).toList();
     updatePlaylistState(p, mediaItems);
+    onLoad.value = false;
   }
 
   // 点击播放音乐

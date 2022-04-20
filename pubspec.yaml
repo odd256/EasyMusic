@@ -43,7 +43,9 @@ dependencies:
   dio: ^4.0.4 # 网络请求
   get_storage: ^2.0.3 # 持久化
   audio_video_progress_bar: ^0.5.0
-  transparent_image: ^2.0.0 # 占位图
+  # transparent_image: ^2.0.0 # 占位图
+  sliding_up_panel: ^2.0.0+1
+  shimmer: ^2.0.0
 
 dev_dependencies:
   flutter_test:

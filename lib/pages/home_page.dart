@@ -1,20 +1,21 @@
 /*
  * @Creator: Odd
  * @Date: 2022-04-12 17:08:52
- * @LastEditTime: 2022-04-19 23:58:47
+ * @LastEditTime: 2022-04-20 16:35:29
  * @FilePath: \flutter_easymusic\lib\pages\home_page.dart
  */
 
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easymusic/controllers/playlist_controller.dart';
+import 'package:flutter_easymusic/global_widgets/custom_shimmer.dart';
 import 'package:flutter_easymusic/models/playlist.dart';
 import 'package:flutter_easymusic/pages/routes/app_routes.dart';
 import 'package:flutter_easymusic/services/playlist_state.dart';
 import 'package:flutter_easymusic/services/user_state.dart';
 import 'package:get/get.dart';
-import 'package:transparent_image/transparent_image.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -113,101 +114,6 @@ class HomeDrawer extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-class UserSliverAppBar extends StatelessWidget {
-  const UserSliverAppBar({Key? key}) : super(key: key);
-
-  _buildUserTitle() {
-    final userState = Get.find<UserState>();
-
-    return Obx(() => ClipRRect(
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-          child: Container(
-            color: Colors.grey[50],
-            padding: const EdgeInsets.fromLTRB(50, 8, 50, 8),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                CircleAvatar(
-                  radius: 15,
-                  foregroundImage: userState.isLogin.value
-                      ? NetworkImage(userState.user.value.avatarUrl)
-                      : null,
-                  child: userState.isLogin.value
-                      ? null
-                      : const Text(
-                          '登录',
-                          style: TextStyle(fontSize: 11),
-                        ),
-                ),
-                Container(
-                  margin: const EdgeInsets.only(left: 8),
-                  height: 40,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        userState.user.value.uname,
-                        style: const TextStyle(
-                            color: Colors.black,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w400),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      Text(
-                        'id: ${userState.user.value.id}',
-                        style: const TextStyle(
-                            color: Colors.black,
-                            fontSize: 10,
-                            fontWeight: FontWeight.w300),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
-                  ),
-                )
-              ],
-            ),
-          ),
-        ));
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final userState = Get.find<UserState>();
-
-    return SliverAppBar(
-      pinned: true,
-      stretch: true,
-      actions: [
-        IconButton(
-          icon: const Icon(Icons.search_rounded),
-          onPressed: () {
-            Get.toNamed(AppRoutes.search);
-          },
-        ),
-      ],
-      expandedHeight: 300,
-      flexibleSpace: Obx(() => FlexibleSpaceBar(
-            centerTitle: true,
-            title: _buildUserTitle(),
-            titlePadding: const EdgeInsets.all(0),
-            stretchModes: const [StretchMode.zoomBackground],
-            background: userState.isLogin.value
-                ? FadeInImage.memoryNetwork(
-                    fit: BoxFit.cover,
-                    height: double.infinity,
-                    width: double.infinity,
-                    placeholder: kTransparentImage,
-                    image: userState.user.value.backgroundUrl)
-                : Container(
-                    color: Colors.white,
-                  ),
-          )),
     );
   }
 }
@@ -429,13 +335,49 @@ class PlaylistItemListWidget extends StatelessWidget {
         subtitle: Text('${playlist.trackCount} 首'),
       );
 
+  _buildShimmerListTile(context) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 16),
+      child: Row(
+        children: [
+          const CustomShimmer.rectangular(
+            height: 55,
+            width: 55,
+          ),
+          const SizedBox(width: 15),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              CustomShimmer.rectangular(
+                height: 16,
+                width: MediaQuery.of(context).size.width * 0.6,
+              ),
+              const SizedBox(
+                height: 5,
+              ),
+              CustomShimmer.rectangular(
+                height: 14,
+                width: MediaQuery.of(context).size.width * 0.3,
+              ),
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    final playListController = Get.find<PlaylistController>();
+    final playlistController = Get.find<PlaylistController>();
     return Obx(() => SliverPrototypeExtentList(
           delegate: SliverChildBuilderDelegate(
-              (c, i) => _buildPlaylistListTile(playListController.playlists[i]),
-              childCount: playListController.playlists.length),
+              (c, i) => playlistController.onLoad.value
+                  ? _buildShimmerListTile(context)
+                  : _buildPlaylistListTile(playlistController.playlists[i]),
+              childCount: playlistController.onLoad.value
+                  ? 5
+                  : playlistController.playlists.length),
           prototypeItem: const ListTile(
             title: Text(''),
             subtitle: Text(''),

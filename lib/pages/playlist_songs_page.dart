@@ -1,13 +1,15 @@
 /*
  * @Creator: Odd
  * @Date: 2022-04-13 21:57:27
- * @LastEditTime: 2022-04-19 11:10:06
+ * @LastEditTime: 2022-04-20 16:34:12
  * @FilePath: \flutter_easymusic\lib\pages\playlist_songs_page.dart
  */
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_easymusic/controllers/playlist_songs_controller.dart';
+import 'package:flutter_easymusic/global_widgets/custom_shimmer.dart';
 import 'package:flutter_easymusic/pages/routes/app_routes.dart';
 import 'package:flutter_easymusic/services/playlist_state.dart';
 import 'package:get/get.dart';
@@ -29,84 +31,256 @@ class PlaylistSongsPage extends StatelessWidget {
         body: Obx(() => CustomScrollView(
               physics: const BouncingScrollPhysics(),
               slivers: [
-                SliverAppBar(
-                  pinned: true,
-                  // 滑动到顶端时会固定住
-                  stretch: true,
-                  title: Text(
-                    title,
-                    style: const TextStyle(color: Colors.black),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  actions: [
-                    IconButton(
-                        onPressed: () => Get.toNamed(AppRoutes.search),
-                        icon: const Icon(Icons.search_rounded)),
-                  ],
-                  expandedHeight: 320.0,
-                  flexibleSpace: FlexibleSpaceBar(
-                      background: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      Image.network(
-                        playlistState.currentPlaylist.value.coverImgUrl,
-                        height: double.infinity,
-                        width: double.infinity,
-                        fit: BoxFit.fill,
-                      ),
-                      // FadeInImage.memoryNetwork(
-                      //   fit: BoxFit.cover,
-                      //   height: double.infinity,
-                      //   width: double.infinity,
-                      //   image: playlistState.currentPlaylist.value.coverImgUrl,
-                      //   placeholder: kTransparentImage,
-                      // ),
-                      BackdropFilter(
-                        filter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
-                        child: Container(
-                          color: Colors.white.withOpacity(0.3),
-                        ),
-                      ),
-                      const PlaylistDetail(),
-                    ],
-                  )),
-                ),
-                SliverPrototypeExtentList(
-                  delegate: SliverChildBuilderDelegate(
-                      (c, i) => ListTile(
-                            onTap: () {
-                              //播放歌曲
-                              psController.onSonglistItemClick(
-                                  playlistState.currentPlaylist.value, i);
-                            },
-                            title: Text(
-                              playlistState.currentMediaItems[i].title,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            leading: SizedBox(
-                              child: Center(
-                                  child: Text(
-                                '${i + 1}',
-                                style: const TextStyle(fontSize: 20),
-                              )),
-                              height: 50,
-                              width: 50,
-                            ),
-                            subtitle: Text(
-                              playlistState.currentMediaItems[i].artist!,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                      childCount: playlistState.currentMediaItems.length),
-                  prototypeItem: const ListTile(
-                    title: Text(''),
-                    subtitle: Text(''),
-                    leading: Icon(Icons.print_rounded),
-                  ),
-                )
+                SliverPersistentHeader(
+                    pinned: true,
+                    delegate: PlaylistSliverHeaderDelegate(
+                      collapsedHeight: 40,
+                      expandedHeight: 300,
+                      paddingTop: MediaQuery.of(context).padding.top,
+                      title: '共${playlistState.currentMediaItems.length}首',
+                    )),
+                SongSliverList(
+                    psController: psController, playlistState: playlistState)
               ],
             )));
   }
+}
+
+class SongSliverList extends StatelessWidget {
+  const SongSliverList({
+    Key? key,
+    required this.psController,
+    required this.playlistState,
+  }) : super(key: key);
+
+  final PlaylistSongsController psController;
+  final PlaylistState playlistState;
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverPrototypeExtentList(
+      delegate: SliverChildBuilderDelegate(
+          (c, i) => psController.onLoad.value
+              ? _buildShimmerListTile(context, i)
+              : _buildSongListTile(i),
+          childCount: psController.onLoad.value
+              ? 7
+              : playlistState.currentMediaItems.length),
+      prototypeItem: const ListTile(
+        title: Text(''),
+        subtitle: Text(''),
+        leading: Icon(Icons.print_rounded),
+      ),
+    );
+  }
+
+  _buildShimmerListTile(context, i) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 16),
+      child: Row(
+        children: [
+          SizedBox(
+            height: 50,
+            width: 50,
+            child: Center(
+              child: Text(
+                '${i + 1}',
+                style: const TextStyle(fontSize: 20),
+              ),
+            ),
+          ),
+          const SizedBox(width: 15),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              CustomShimmer.rectangular(
+                height: 16,
+                width: MediaQuery.of(context).size.width * 0.6,
+              ),
+              const SizedBox(
+                height: 5,
+              ),
+              CustomShimmer.rectangular(
+                height: 14,
+                width: MediaQuery.of(context).size.width * 0.3,
+              ),
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
+  ListTile _buildSongListTile(int i) {
+    return ListTile(
+      onTap: () {
+        //播放歌曲
+        psController.onSonglistItemClick(
+            playlistState.currentPlaylist.value, i);
+      },
+      title: Text(
+        playlistState.currentMediaItems[i].title,
+        overflow: TextOverflow.ellipsis,
+      ),
+      leading: SizedBox(
+        child: Center(
+            child: Text(
+          '${i + 1}',
+          style: const TextStyle(fontSize: 20),
+        )),
+        height: 50,
+        width: 50,
+      ),
+      subtitle: Text(
+        playlistState.currentMediaItems[i].artist!,
+        overflow: TextOverflow.ellipsis,
+      ),
+    );
+  }
+}
+
+class PlaylistSliverHeaderDelegate extends SliverPersistentHeaderDelegate {
+  final double collapsedHeight;
+  final double expandedHeight;
+  final double paddingTop;
+  final String title;
+  String statusBarMode = 'dark';
+  PlaylistSliverHeaderDelegate({
+    required this.collapsedHeight,
+    required this.expandedHeight,
+    required this.paddingTop,
+    required this.title,
+  });
+
+  void updateStatusBarBrightness(shrinkOffset) {
+    if (shrinkOffset > 50 && statusBarMode == 'dark') {
+      statusBarMode = 'light';
+      SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+        statusBarBrightness: Brightness.light,
+        statusBarIconBrightness: Brightness.light,
+      ));
+    } else if (shrinkOffset <= 50 && statusBarMode == 'light') {
+      statusBarMode = 'dark';
+      SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+        statusBarBrightness: Brightness.dark,
+        statusBarIconBrightness: Brightness.dark,
+      ));
+    }
+  }
+
+  Color makeStickyHeaderBgColor(shrinkOffset) {
+    final int alpha =
+        (shrinkOffset / (maxExtent - minExtent) * 255).clamp(0, 255).toInt();
+    return Color.fromARGB(alpha, 255, 255, 255);
+  }
+
+  Color makeStickyHeaderTextColor(shrinkOffset, isIcon) {
+    if (shrinkOffset <= 50) {
+      return isIcon ? Colors.white : Colors.transparent;
+    } else {
+      final int alpha =
+          (shrinkOffset / (maxExtent - minExtent) * 255).clamp(0, 255).toInt();
+      return Color.fromARGB(alpha, 0, 0, 0);
+    }
+  }
+
+  _buildPlaylistInfo() {
+    final playlistState = Get.find<PlaylistState>();
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      width: double.infinity,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            clipBehavior: Clip.hardEdge,
+            margin: EdgeInsets.only(top: paddingTop),
+            decoration: const BoxDecoration(
+              borderRadius: BorderRadius.all(Radius.circular(13)),
+            ),
+            height: 140,
+            width: 140,
+            child: Image.network(
+              playlistState.currentPlaylist.value.coverImgUrl,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
+    updateStatusBarBrightness(shrinkOffset);
+    final playlistState = Get.find<PlaylistState>();
+    return SizedBox(
+      height: maxExtent,
+      width: MediaQuery.of(context).size.width,
+      child: Stack(
+        alignment: Alignment.center,
+        fit: StackFit.expand,
+        children: <Widget>[
+          // Image.network(
+          //     playlistState.currentPlaylist.value.coverImgUrl,
+          //     fit: BoxFit.cover),
+          _buildPlaylistInfo(),
+          Positioned(
+            left: 0,
+            right: 0,
+            top: 0,
+            child: Container(
+              color: makeStickyHeaderBgColor(shrinkOffset),
+              child: SafeArea(
+                bottom: false,
+                child: SizedBox(
+                  height: collapsedHeight,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      IconButton(
+                        icon: Icon(
+                          Icons.arrow_back_ios_rounded,
+                          color: makeStickyHeaderTextColor(shrinkOffset, true),
+                        ),
+                        onPressed: () => Get.back(),
+                      ),
+                      Text(
+                        title,
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w500,
+                          color: makeStickyHeaderTextColor(shrinkOffset, false),
+                        ),
+                      ),
+                      IconButton(
+                        icon: Icon(
+                          Icons.search_rounded,
+                          color: makeStickyHeaderTextColor(shrinkOffset, true),
+                        ),
+                        onPressed: () {},
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  double get maxExtent => expandedHeight;
+
+  @override
+  double get minExtent => collapsedHeight + paddingTop;
+
+  @override
+  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) =>
+      true;
 }
 
 class PlaylistDetail extends StatelessWidget {
