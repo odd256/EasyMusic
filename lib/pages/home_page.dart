@@ -1,7 +1,7 @@
 /*
  * @Creator: Odd
  * @Date: 2022-04-12 17:08:52
- * @LastEditTime: 2022-04-20 16:35:29
+ * @LastEditTime: 2022-04-21 20:58:44
  * @FilePath: \flutter_easymusic\lib\pages\home_page.dart
  */
 
@@ -10,6 +10,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easymusic/controllers/playlist_controller.dart';
+import 'package:flutter_easymusic/global_widgets/bottom_player_bar.dart';
 import 'package:flutter_easymusic/global_widgets/custom_shimmer.dart';
 import 'package:flutter_easymusic/models/playlist.dart';
 import 'package:flutter_easymusic/pages/routes/app_routes.dart';
@@ -70,7 +71,7 @@ class HomePage extends StatelessWidget {
         drawerEdgeDragWidth: 150,
         drawer: const HomeDrawer(),
         body: _buildHomePage(context, _scaffoldKey),
-        // bottomNavigationBar: const BottomPlayerBar(),
+        bottomNavigationBar: const BottomPlayerBar(),
       ),
     );
   }

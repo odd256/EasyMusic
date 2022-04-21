@@ -1,12 +1,13 @@
 /*
  * @Creator: Odd
  * @Date: 2022-04-12 17:01:31
- * @LastEditTime: 2022-04-17 00:12:04
+ * @LastEditTime: 2022-04-21 02:25:03
  * @FilePath: \flutter_easymusic\lib\pages\routes\app_pages.dart
  */
 import 'package:flutter_easymusic/controllers/playlist_controller.dart';
 import 'package:flutter_easymusic/controllers/playlist_songs_controller.dart';
 import 'package:flutter_easymusic/controllers/user_controller.dart';
+import 'package:flutter_easymusic/pages/current_song_page.dart';
 import 'package:flutter_easymusic/pages/home_page.dart';
 import 'package:flutter_easymusic/pages/login_page.dart';
 import 'package:flutter_easymusic/pages/playlist_songs_page.dart';
@@ -40,6 +41,10 @@ class AppPages {
         name: AppRoutes.playlistSongs,
         page: () => PlaylistSongsPage(),
         binding: PlaylistSongsPageBinding()),
+    GetPage(
+        name: AppRoutes.currentSong,
+        page: () => const CurrentSongPage(),
+        ),
   ];
 }
 

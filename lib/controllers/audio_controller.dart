@@ -1,7 +1,7 @@
 /*
  * @Creator: Odd
  * @Date: 2022-04-12 14:09:13
- * @LastEditTime: 2022-04-19 11:09:43
+ * @LastEditTime: 2022-04-21 02:08:46
  * @FilePath: \flutter_easymusic\lib\controllers\audio_controller.dart
  */
 
@@ -20,6 +20,8 @@ class AudioController extends GetxController {
       Playlist(0, '', '', 0, Creator(userId: 0, nickname: '', avatarUrl: ''));
 
   var currentMediaItems = List<MediaItem>.empty();
+
+  late MediaItem currentMediaItem;
 
   ProgressBarState progress = const ProgressBarState(
     current: Duration.zero,
@@ -149,6 +151,8 @@ class AudioController extends GetxController {
   void _listenToChangesInSong() {
     _audioHandler.mediaItem.listen((mediaItem) {
       currentSongTitle = mediaItem?.title ?? '';
+      currentMediaItem = mediaItem ??
+          const MediaItem(id: '', album: '', title: '', extras: {'url': ''});
       _updateSkipButtons();
       update();
     });

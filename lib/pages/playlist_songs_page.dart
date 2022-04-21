@@ -1,7 +1,7 @@
 /*
  * @Creator: Odd
  * @Date: 2022-04-13 21:57:27
- * @LastEditTime: 2022-04-20 16:34:12
+ * @LastEditTime: 2022-04-21 01:58:36
  * @FilePath: \flutter_easymusic\lib\pages\playlist_songs_page.dart
  */
 import 'dart:ui';
@@ -114,11 +114,8 @@ class SongSliverList extends StatelessWidget {
 
   ListTile _buildSongListTile(int i) {
     return ListTile(
-      onTap: () {
-        //播放歌曲
-        psController.onSonglistItemClick(
-            playlistState.currentPlaylist.value, i);
-      },
+      onTap: () => psController.onSonglistItemClick(
+          playlistState.currentPlaylist.value, i),
       title: Text(
         playlistState.currentMediaItems[i].title,
         overflow: TextOverflow.ellipsis,

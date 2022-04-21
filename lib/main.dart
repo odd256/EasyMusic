@@ -1,7 +1,7 @@
 /*
  * @Creator: Odd
  * @Date: 2022-04-11 18:07:24
- * @LastEditTime: 2022-04-19 02:23:34
+ * @LastEditTime: 2022-04-21 02:18:14
  * @FilePath: \flutter_easymusic\lib\main.dart
  */
 import 'dart:developer';
@@ -22,7 +22,7 @@ Future<void> main() async {
     initialBinding: GlobalControllerBinding(),
     debugShowCheckedModeBanner: false,
     initialRoute: AppPages.initPage,
-    defaultTransition: Transition.fade,
+    defaultTransition: Transition.topLevel,
     getPages: AppPages.routes,
   ));
 }
