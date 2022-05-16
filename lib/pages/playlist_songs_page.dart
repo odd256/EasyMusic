@@ -3,10 +3,11 @@
 /*
  * @Creator: Odd
  * @Date: 2022-04-13 21:57:27
- * @LastEditTime: 2022-05-16 22:27:40
+ * @LastEditTime: 2022-05-16 23:52:20
  * @FilePath: \flutter_easymusic\lib\pages\playlist_songs_page.dart
  */
 import 'package:flutter/material.dart';
+import 'package:flutter_easymusic/controllers/audio_controller.dart';
 import 'package:flutter_easymusic/controllers/playlist_songs_controller.dart';
 import 'package:flutter_easymusic/global_widgets/bottom_player_bar.dart';
 import 'package:flutter_easymusic/global_widgets/custom_shimmer.dart';
@@ -178,6 +179,7 @@ class SongSliverListView extends StatelessWidget {
     final PlaylistSongsController psController =
         Get.find<PlaylistSongsController>();
     final PlaylistState playlistState = Get.find<PlaylistState>();
+
     return Obx(() => SliverPrototypeExtentList(
           delegate: SliverChildBuilderDelegate(
               (c, i) => psController.onLoad.value
@@ -231,20 +233,59 @@ class SongSliverListView extends StatelessWidget {
     );
   }
 
-  ListTile _buildSongListTile(psController, playlistState, int i) {
+  _buildSongListTile(PlaylistSongsController psController,
+      PlaylistState playlistState, int i) {
     if (i >= playlistState.currentMediaItems.length) return const ListTile();
-
-    return ListTile(
-      onTap: () => psController.onSonglistItemClick(
-          playlistState.currentPlaylist.value, i),
-      title: Text(
-        playlistState.currentMediaItems[i].title,
-        overflow: TextOverflow.ellipsis,
-      ),
-      subtitle: Text(
-        playlistState.currentMediaItems[i].artist!,
-        overflow: TextOverflow.ellipsis,
-      ),
+    final mediaItemId = playlistState.currentMediaItems[i].id;
+    return GetBuilder<AudioController>(
+      init: AudioController(),
+      initState: (_) {},
+      builder: (_) {
+        final curMediaItemId = _.currentMediaItem.id;
+        return ListTile(
+          onTap: () => psController.onSonglistItemClick(
+              playlistState.currentPlaylist.value, i),
+          title: Text(
+            playlistState.currentMediaItems[i].title,
+            style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: curMediaItemId.compareTo(mediaItemId) == 0
+                    ? Colors.blue
+                    : Colors.black),
+            overflow: TextOverflow.ellipsis,
+          ),
+          subtitle: Text(
+            playlistState.currentMediaItems[i].artist!,
+            style: TextStyle(
+                fontSize: 14,
+                color: curMediaItemId.compareTo(mediaItemId) == 0
+                    ? Colors.blue
+                    : Colors.grey),
+            overflow: TextOverflow.ellipsis,
+          ),
+          trailing: SizedBox(
+              width: 95,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  if (curMediaItemId.compareTo(mediaItemId) == 0)
+                    Icon(
+                      Icons.equalizer_rounded,
+                      color: Colors.blue,
+                    ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Icon(Icons.favorite_border_rounded),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Icon(Icons.more_vert_rounded),
+                ],
+              )),
+        );
+      },
     );
   }
 }

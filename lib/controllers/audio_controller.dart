@@ -1,7 +1,7 @@
 /*
  * @Creator: Odd
  * @Date: 2022-04-12 14:09:13
- * @LastEditTime: 2022-04-22 00:39:15
+ * @LastEditTime: 2022-05-16 23:56:43
  * @FilePath: \flutter_easymusic\lib\controllers\audio_controller.dart
  */
 
@@ -54,26 +54,6 @@ class AudioController extends GetxController {
 
     super.onInit();
   }
-
-  // Future<void> _loadPlaylist() async {
-  //   final songRepository = Get.find<PlaylistRepository>();
-  //   final playlist = await songRepository.fetchInitialPlaylist();
-  //   final mediaItems = playlist
-  //       .map((song) => MediaItem(
-  //             id: song['id'] ?? '',
-  //             album: song['album'] ?? '',
-  //             title: song['title'] ?? '',
-  //             extras: {'url': song['url']},
-  //           ))
-  //       .toList();
-  //   _audioHandler.addQueueItems(mediaItems);
-  // }
-
-  // updatePlaylistAndSongs(Playlist playlist, List<MediaItem> mediaItems){
-  //   currentPlaylist = playlist;
-  //   currentMediaItems = mediaItems;
-  //   update();
-  // }
 
   updatePlaylist(Playlist playlist) {
     currentPlaylist = playlist;
@@ -162,7 +142,6 @@ class AudioController extends GetxController {
         //更新歌词
         var data = await SongApi.getLyricBySongId(mediaItem.id);
         lyrics = Lyric.formatLyrics(data['lrc']['lyric']);
-        log(lyrics.length.toString());
       }
 
       _updateSkipButtons();
