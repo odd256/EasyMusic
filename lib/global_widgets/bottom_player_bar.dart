@@ -1,7 +1,7 @@
 /*
  * @Creator: Odd
  * @Date: 2022-04-15 15:00:19
- * @LastEditTime: 2022-05-16 19:24:38
+ * @LastEditTime: 2022-05-16 19:37:31
  * @FilePath: \flutter_easymusic\lib\global_widgets\bottom_player_bar.dart
  */
 
@@ -78,42 +78,51 @@ class BottomPlayerBar extends StatelessWidget {
       builder: (_) {
         return InkWell(
           onTap: () => Get.toNamed(AppRoutes.currentSong),
-          child: Container(
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10), color: Colors.blue),
-            padding: const EdgeInsets.all(10),
-            width: MediaQuery.of(context).size.width - 60,
-            height: 90,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 16),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(ah.mediaItem.value?.title ?? '',
-                          style: const TextStyle(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 20,
-                              color: Colors.white)),
-                      const SizedBox(height: 5),
-                      Text(
-                        ah.mediaItem.value?.artist ?? '',
-                        style: const TextStyle(
-                            fontWeight: FontWeight.w300,
-                            fontSize: 14,
-                            color: Colors.white),
-                      )
-                    ],
+          child: Material(
+            borderRadius: BorderRadius.circular(10),
+            color: Colors.blue,
+            child: Container(
+              padding: const EdgeInsets.all(10),
+              width: MediaQuery.of(context).size.width - 60,
+              height: 90,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(left: 16),
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.width - 260,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(ah.mediaItem.value?.title ?? '',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 20,
+                                  color: Colors.white)),
+                          const SizedBox(height: 5),
+                          Text(
+                            ah.mediaItem.value?.artist ?? '',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                                fontWeight: FontWeight.w300,
+                                fontSize: 14,
+                                color: Colors.white),
+                          )
+                        ],
+                      ),
+                    ),
                   ),
-                ),
-                const SizedBox(
-                  width: 10,
-                ),
-                _buildControlButton(),
-              ],
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  _buildControlButton(),
+                ],
+              ),
             ),
           ),
         );
