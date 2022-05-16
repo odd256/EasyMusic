@@ -1,7 +1,7 @@
 /*
  * @Creator: Odd
  * @Date: 2022-04-12 17:08:52
- * @LastEditTime: 2022-04-21 20:58:44
+ * @LastEditTime: 2022-05-16 11:35:47
  * @FilePath: \flutter_easymusic\lib\pages\home_page.dart
  */
 
@@ -70,8 +70,10 @@ class HomePage extends StatelessWidget {
         key: _scaffoldKey,
         drawerEdgeDragWidth: 150,
         drawer: const HomeDrawer(),
+        floatingActionButton: const BottomPlayerBar(),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
         body: _buildHomePage(context, _scaffoldKey),
-        bottomNavigationBar: const BottomPlayerBar(),
+        // bottomNavigationBar: const BottomPlayerBar(),
       ),
     );
   }
@@ -316,25 +318,32 @@ class UserSliverHeaderDelegate extends SliverPersistentHeaderDelegate {
 class PlaylistItemListWidget extends StatelessWidget {
   const PlaylistItemListWidget({Key? key}) : super(key: key);
 
-  _buildPlaylistListTile(Playlist playlist) => ListTile(
-        onTap: () => {
-          //在路由过之前，先将playlist传给playlistState
-          // Get.find<PlaylistSongsController>().getMySongsByPlaylist(playlist),
-          Get.find<PlaylistState>().currentPlaylist.value = playlist,
-          Get.toNamed(AppRoutes.playlistSongs)
-        },
-        title: Text(
-          playlist.name,
-          overflow: TextOverflow.ellipsis,
-        ),
-        leading: Image.network(
-          playlist.coverImgUrl,
-          width: 55,
-          height: 55,
-          fit: BoxFit.fill,
-        ),
-        subtitle: Text('${playlist.trackCount} 首'),
-      );
+  _buildPlaylistListTile(playlistController, i) {
+    if (i >= playlistController.playlists.length) {
+      return const SizedBox();
+    }
+
+    Playlist playlist = playlistController.playlists[i];
+    return ListTile(
+      onTap: () => {
+        //在路由过之前，先将playlist传给playlistState
+        // Get.find<PlaylistSongsController>().getMySongsByPlaylist(playlist),
+        Get.find<PlaylistState>().currentPlaylist.value = playlist,
+        Get.toNamed(AppRoutes.playlistSongs)
+      },
+      title: Text(
+        playlist.name,
+        overflow: TextOverflow.ellipsis,
+      ),
+      leading: Image.network(
+        playlist.coverImgUrl,
+        width: 55,
+        height: 55,
+        fit: BoxFit.fill,
+      ),
+      subtitle: Text('${playlist.trackCount} 首'),
+    );
+  }
 
   _buildShimmerListTile(context) {
     return Padding(
@@ -375,10 +384,10 @@ class PlaylistItemListWidget extends StatelessWidget {
           delegate: SliverChildBuilderDelegate(
               (c, i) => playlistController.onLoad.value
                   ? _buildShimmerListTile(context)
-                  : _buildPlaylistListTile(playlistController.playlists[i]),
+                  : _buildPlaylistListTile(playlistController, i),
               childCount: playlistController.onLoad.value
                   ? 5
-                  : playlistController.playlists.length),
+                  : playlistController.playlists.length + 2),
           prototypeItem: const ListTile(
             title: Text(''),
             subtitle: Text(''),

@@ -1,7 +1,7 @@
 /*
  * @Creator: Odd
  * @Date: 2022-04-21 02:24:08
- * @LastEditTime: 2022-04-21 23:18:02
+ * @LastEditTime: 2022-04-22 00:41:24
  * @FilePath: \flutter_easymusic\lib\pages\current_song_page.dart
  */
 import 'package:audio_service/audio_service.dart';
@@ -154,10 +154,22 @@ class LyricListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return Container(
       child: Center(
-        child: Text("This is the SlidingUpPanel when open"),
+        child: Text("画歌词"),
       ),
     );
+  }
+}
+
+class LyricPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {}
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    // TODO: implement shouldRepaint
+    throw UnimplementedError();
   }
 }

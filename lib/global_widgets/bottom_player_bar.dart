@@ -1,7 +1,7 @@
 /*
  * @Creator: Odd
  * @Date: 2022-04-15 15:00:19
- * @LastEditTime: 2022-04-21 21:35:24
+ * @LastEditTime: 2022-05-16 19:24:38
  * @FilePath: \flutter_easymusic\lib\global_widgets\bottom_player_bar.dart
  */
 
@@ -17,6 +17,58 @@ const String defaultImgUrl =
 class BottomPlayerBar extends StatelessWidget {
   const BottomPlayerBar({Key? key}) : super(key: key);
 
+  _buildControlButton() {
+    final ac = Get.find<AudioController>();
+    var playbtn = ac.playButton == ButtonState.playing
+        ? IconButton(
+            onPressed: () {
+              ac.pause();
+            },
+            icon: const Icon(
+              Icons.pause_outlined,
+              color: Colors.white,
+            ),
+          )
+        : IconButton(
+            onPressed: () {
+              ac.play();
+            },
+            icon: const Icon(
+              Icons.play_arrow_outlined,
+              color: Colors.white,
+            ),
+          );
+
+    var nextbtn = IconButton(
+      onPressed: () {
+        ac.next();
+      },
+      icon: const Icon(
+        Icons.skip_next_outlined,
+        color: Colors.white,
+      ),
+    );
+    var prebtn = IconButton(
+      onPressed: () {
+        ac.previous();
+      },
+      icon: const Icon(
+        Icons.skip_previous_outlined,
+        color: Colors.white,
+      ),
+    );
+    return IconTheme(
+      data: const IconThemeData(color: Colors.white, size: 30),
+      child: Row(
+        children: [
+          prebtn,
+          playbtn,
+          nextbtn,
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final ah = Get.find<AudioHandler>();
@@ -26,18 +78,41 @@ class BottomPlayerBar extends StatelessWidget {
       builder: (_) {
         return InkWell(
           onTap: () => Get.toNamed(AppRoutes.currentSong),
-          child: SizedBox(
-            height: 70,
+          child: Container(
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10), color: Colors.blue),
+            padding: const EdgeInsets.all(10),
+            width: MediaQuery.of(context).size.width - 60,
+            height: 90,
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Image.network(
-                    ah.mediaItem.value?.artUri.toString() ?? defaultImgUrl),
-                Column(
-                  children: [
-                    Text(ah.mediaItem.value?.title ?? '',
-                        style: Theme.of(context).textTheme.headline6),
-                  ],
-                )
+                Padding(
+                  padding: const EdgeInsets.only(left: 16),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(ah.mediaItem.value?.title ?? '',
+                          style: const TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 20,
+                              color: Colors.white)),
+                      const SizedBox(height: 5),
+                      Text(
+                        ah.mediaItem.value?.artist ?? '',
+                        style: const TextStyle(
+                            fontWeight: FontWeight.w300,
+                            fontSize: 14,
+                            color: Colors.white),
+                      )
+                    ],
+                  ),
+                ),
+                const SizedBox(
+                  width: 10,
+                ),
+                _buildControlButton(),
               ],
             ),
           ),

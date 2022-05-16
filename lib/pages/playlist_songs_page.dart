@@ -1,16 +1,14 @@
 /*
  * @Creator: Odd
  * @Date: 2022-04-13 21:57:27
- * @LastEditTime: 2022-04-21 01:58:36
+ * @LastEditTime: 2022-05-16 19:22:53
  * @FilePath: \flutter_easymusic\lib\pages\playlist_songs_page.dart
  */
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easymusic/controllers/playlist_songs_controller.dart';
+import 'package:flutter_easymusic/global_widgets/bottom_player_bar.dart';
 import 'package:flutter_easymusic/global_widgets/custom_shimmer.dart';
-import 'package:flutter_easymusic/pages/routes/app_routes.dart';
 import 'package:flutter_easymusic/services/playlist_state.dart';
 import 'package:get/get.dart';
 
@@ -28,21 +26,25 @@ class PlaylistSongsPage extends StatelessWidget {
     final psController = Get.find<PlaylistSongsController>();
     final playlistState = Get.find<PlaylistState>();
     return Scaffold(
-        body: Obx(() => CustomScrollView(
-              physics: const BouncingScrollPhysics(),
-              slivers: [
-                SliverPersistentHeader(
-                    pinned: true,
-                    delegate: PlaylistSliverHeaderDelegate(
-                      collapsedHeight: 40,
-                      expandedHeight: 300,
-                      paddingTop: MediaQuery.of(context).padding.top,
-                      title: '共${playlistState.currentMediaItems.length}首',
-                    )),
-                SongSliverList(
-                    psController: psController, playlistState: playlistState)
-              ],
-            )));
+      body: Obx(() => CustomScrollView(
+            physics: const BouncingScrollPhysics(),
+            slivers: [
+              SliverPersistentHeader(
+                  pinned: true,
+                  delegate: PlaylistSliverHeaderDelegate(
+                    collapsedHeight: 40,
+                    expandedHeight: 300,
+                    paddingTop: MediaQuery.of(context).padding.top,
+                    title: '共${playlistState.currentMediaItems.length}首',
+                  )),
+              SongSliverList(
+                  psController: psController, playlistState: playlistState)
+            ],
+          )),
+      floatingActionButton: const BottomPlayerBar(),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      // bottomNavigationBar: const BottomPlayerBar(),
+    );
   }
 }
 

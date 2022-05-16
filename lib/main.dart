@@ -1,12 +1,14 @@
 /*
  * @Creator: Odd
  * @Date: 2022-04-11 18:07:24
- * @LastEditTime: 2022-04-21 02:18:14
+ * @LastEditTime: 2022-05-15 10:18:28
  * @FilePath: \flutter_easymusic\lib\main.dart
  */
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_easymusic/controllers/bindings/controller_bindings.dart';
 import 'package:flutter_easymusic/pages/routes/app_pages.dart';
 import 'package:flutter_easymusic/services/playlist_state.dart';
@@ -18,6 +20,14 @@ import 'package:get_storage/get_storage.dart';
 
 Future<void> main() async {
   await initService();
+
+  if (Platform.isAndroid) {
+    // 以下两行 设置android状态栏为透明的沉浸。
+    SystemUiOverlayStyle systemUiOverlayStyle =
+        const SystemUiOverlayStyle(statusBarColor: Colors.transparent);
+    SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
+  }
+
   runApp(GetMaterialApp(
     initialBinding: GlobalControllerBinding(),
     debugShowCheckedModeBanner: false,

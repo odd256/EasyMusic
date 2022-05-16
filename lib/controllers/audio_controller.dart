@@ -1,12 +1,16 @@
 /*
  * @Creator: Odd
  * @Date: 2022-04-12 14:09:13
- * @LastEditTime: 2022-04-21 02:08:46
+ * @LastEditTime: 2022-04-22 00:39:15
  * @FilePath: \flutter_easymusic\lib\controllers\audio_controller.dart
  */
 
+import 'dart:developer';
+
 import 'package:audio_service/audio_service.dart';
+import 'package:flutter_easymusic/api/song_api.dart';
 import 'package:flutter_easymusic/models/creator.dart';
+import 'package:flutter_easymusic/models/lyric.dart';
 import 'package:flutter_easymusic/models/playlist.dart';
 import 'package:get/get.dart';
 
@@ -22,6 +26,8 @@ class AudioController extends GetxController {
   var currentMediaItems = List<MediaItem>.empty();
 
   late MediaItem currentMediaItem;
+
+  var lyrics = List<Lyric>.empty();
 
   ProgressBarState progress = const ProgressBarState(
     current: Duration.zero,
@@ -68,7 +74,6 @@ class AudioController extends GetxController {
   //   currentMediaItems = mediaItems;
   //   update();
   // }
-
 
   updatePlaylist(Playlist playlist) {
     currentPlaylist = playlist;
@@ -149,10 +154,17 @@ class AudioController extends GetxController {
   }
 
   void _listenToChangesInSong() {
-    _audioHandler.mediaItem.listen((mediaItem) {
+    _audioHandler.mediaItem.listen((mediaItem) async {
       currentSongTitle = mediaItem?.title ?? '';
       currentMediaItem = mediaItem ??
           const MediaItem(id: '', album: '', title: '', extras: {'url': ''});
+      if (mediaItem != null) {
+        //更新歌词
+        var data = await SongApi.getLyricBySongId(mediaItem.id);
+        lyrics = Lyric.formatLyrics(data['lrc']['lyric']);
+        log(lyrics.length.toString());
+      }
+
       _updateSkipButtons();
       update();
     });

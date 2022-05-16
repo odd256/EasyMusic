@@ -1,7 +1,7 @@
 <!--
  * @Creator: Odd
  * @Date: 2022-04-10 21:01:33
- * @LastEditTime: 2022-04-19 11:47:20
+ * @LastEditTime: 2022-04-25 02:24:05
  * @FilePath: \flutter_easymusic\README.md
 -->
 # EasyMusic 简单音乐 （目前仍在更新中...）
@@ -59,13 +59,13 @@
 
 ## 开发使用的插件
 
-- cupertino_icons: ^1.0.2  
- ---音乐播放支持---
+- cupertino_icons: ^1.0.2
 - audio_service: ^0.18.4 # 系统通知栏提醒
 - audio_session: ^0.1.6+1 # 定义音频的含义，音效/音乐/提醒...
-- just_audio: ^0.9.20 # 音乐播放器  
- ---音乐播放支持---
-- get: ^4.6.1 # 神器！
+- just_audio: ^0.9.20 # 音乐播放器
+- get: ^4.6.1 # 神器！包括：路由管理、状态管理、依赖注入
 - dio: ^4.0.4 # 网络请求
 - get_storage: ^2.0.3 # 持久化
-- transparent_image: ^2.0.0 # 占位图
+- audio_video_progress_bar: ^0.5.0
+- sliding_up_panel: ^2.0.0+1 # 上滑面板
+- shimmer: ^2.0.0 # 占位图
