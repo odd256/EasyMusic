@@ -1,7 +1,7 @@
 /*
  * @Creator: Odd
  * @Date: 2022-04-21 02:24:08
- * @LastEditTime: 2022-05-17 00:31:48
+ * @LastEditTime: 2022-05-17 00:42:00
  * @FilePath: \flutter_easymusic\lib\pages\current_song_page.dart
  */
 import 'package:audio_service/audio_service.dart';
@@ -107,8 +107,11 @@ class CurrentSongPage extends StatelessWidget {
                               onPressed: () {},
                               icon: const Icon(Icons.share_rounded)),
                           SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.7-100,
+                            width:
+                                MediaQuery.of(context).size.width * 0.7 - 100,
                             child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
                                   audioHandler.mediaItem.value?.title ?? '',
@@ -119,6 +122,7 @@ class CurrentSongPage extends StatelessWidget {
                                 ),
                                 Text(audioHandler.mediaItem.value?.artist ?? '',
                                     style: const TextStyle(
+                                        overflow: TextOverflow.ellipsis,
                                         fontWeight: FontWeight.w500,
                                         fontSize: 16))
                               ],

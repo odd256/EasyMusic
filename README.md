@@ -1,7 +1,7 @@
 <!--
  * @Creator: Odd
  * @Date: 2022-04-10 21:01:33
- * @LastEditTime: 2022-05-16 22:39:20
+ * @LastEditTime: 2022-05-17 00:45:05
  * @FilePath: \flutter_easymusic\README.md
 -->
 # EasyMusic 简单音乐 （目前仍在更新中...）
@@ -19,19 +19,20 @@
 - [x] 获取登录用户的歌单
 - [x] 播放音乐
 - [x] 通知栏小组件
+- [x] UI重构
+- [x] 支持上一首，下一首播放
+- [x] 调整部分UI，避免遮挡
 
 ## 正在进行中
 
 - 歌词页面
-- UI重构
+- ~~UI重构~~
 - ~~添加对sqlite的支持，减少网络延迟~~
 
 ## 计划实现（优先级从上往下递减）
 
 - [ ] 歌词页面
-- [ ] 支持上一首，下一首播放
 - [ ] 支持随机播放，列表循环，单曲循环
-- [ ] 调整部分UI，避免遮挡
 - [ ] 使用screenUtil提高屏幕的兼容性
 - [ ] 对于不能播放的歌曲使用其他源播放
 - [ ] 图片背景支持修改
@@ -52,6 +53,10 @@
 `flutter build apk --obfuscate --split-debug-info=debugInfo --target-platform android-arm,android-arm64,android-x64 --split-per-abi`
 
 # 项目支持
+
+## 界面设计来源
+
+- [Lokanaka](https://dribbble.com/shots/16270622-Music-Streaming-Mobile-App)
 
 ## 网易云API
 
