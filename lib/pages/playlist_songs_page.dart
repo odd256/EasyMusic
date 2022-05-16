@@ -1,7 +1,9 @@
+// ignore_for_file: prefer_const_constructors
+
 /*
  * @Creator: Odd
  * @Date: 2022-04-13 21:57:27
- * @LastEditTime: 2022-05-16 21:44:51
+ * @LastEditTime: 2022-05-16 22:27:40
  * @FilePath: \flutter_easymusic\lib\pages\playlist_songs_page.dart
  */
 import 'package:flutter/material.dart';
@@ -43,6 +45,9 @@ class PlaylistSongsPage extends StatelessWidget {
               SliverToBoxAdapter(
                 child: PlaylistHeader(),
               ),
+              SliverToBoxAdapter(
+                child: ControllButton(),
+              ),
               SongSliverListView(),
             ],
           ),
@@ -61,54 +66,103 @@ class PlaylistHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final playlistState = Get.find<PlaylistState>();
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            child: Image.network(
-                playlistState.currentPlaylist.value.coverImgUrl,
-                width: 150,
-                height: 150),
-          ),
-          const SizedBox(
-            width: 20,
-          ),
-          Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(playlistState.currentPlaylist.value.name,
-                    style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.grey)),
-                const SizedBox(
-                  height: 10,
-                ),
-                Row(
-                  children: [
-                    CircleAvatar(
-                      radius: 14,
-                      backgroundImage: NetworkImage(
-                        playlistState.currentPlaylist.value.creator.avatarUrl,
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 6,
-                    ),
-                    Text(playlistState.currentPlaylist.value.creator.nickname,
-                        style: const TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold))
-                  ],
-                ),
-              ],
+    return Obx(() => Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: Image.network(
+                  playlistState.currentPlaylist.value.coverImgUrl,
+                  width: 150,
+                  height: 150),
             ),
-          )
-        ],
+            const SizedBox(
+              width: 20,
+            ),
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(playlistState.currentPlaylist.value.name,
+                      style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey)),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    children: [
+                      CircleAvatar(
+                        radius: 14,
+                        backgroundImage: NetworkImage(
+                          playlistState.currentPlaylist.value.creator.avatarUrl,
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 6,
+                      ),
+                      Text(playlistState.currentPlaylist.value.creator.nickname,
+                          style: const TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.bold))
+                    ],
+                  ),
+                ],
+              ),
+            )
+          ],
+        ));
+  }
+}
+
+class ControllButton extends StatelessWidget {
+  const ControllButton({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Theme(
+      data: ThemeData(
+          elevatedButtonTheme: ElevatedButtonThemeData(
+              style: ButtonStyle(
+                  padding: MaterialStateProperty.all<EdgeInsets>(
+                      const EdgeInsets.symmetric(vertical: 12)),
+                  backgroundColor:
+                      MaterialStateProperty.all<Color>(Color(0xff24abe3)),
+                  textStyle:
+                      MaterialStateProperty.all(TextStyle(fontSize: 16))))),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 30),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Expanded(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: ElevatedButton.icon(
+                  label: const Text('随机播放'),
+                  onPressed: () => {},
+                  icon: const Icon(Icons.shuffle_rounded),
+                ),
+              ),
+            ),
+            const SizedBox(
+              width: 10,
+            ),
+            Expanded(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: ElevatedButton.icon(
+                  label: const Text(
+                    '顺序播放',
+                  ),
+                  onPressed: () => {},
+                  icon: const Icon(Icons.queue_music_rounded),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -124,19 +178,19 @@ class SongSliverListView extends StatelessWidget {
     final PlaylistSongsController psController =
         Get.find<PlaylistSongsController>();
     final PlaylistState playlistState = Get.find<PlaylistState>();
-    return SliverPrototypeExtentList(
-      delegate: SliverChildBuilderDelegate(
-          (c, i) => psController.onLoad.value
-              ? _buildShimmerListTile(context, i)
-              : _buildSongListTile(psController, playlistState, i),
-          childCount: psController.onLoad.value
-              ? 7
-              : playlistState.currentMediaItems.length + 2),
-      prototypeItem: const ListTile(
-        title: Text(''),
-        subtitle: Text(''),
-      ),
-    );
+    return Obx(() => SliverPrototypeExtentList(
+          delegate: SliverChildBuilderDelegate(
+              (c, i) => psController.onLoad.value
+                  ? _buildShimmerListTile(context, i)
+                  : _buildSongListTile(psController, playlistState, i),
+              childCount: psController.onLoad.value
+                  ? 7
+                  : playlistState.currentMediaItems.length + 2),
+          prototypeItem: const ListTile(
+            title: Text(''),
+            subtitle: Text(''),
+          ),
+        ));
   }
 
   _buildShimmerListTile(context, i) {

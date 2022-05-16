@@ -1,7 +1,7 @@
 /*
  * @Creator: Odd
  * @Date: 2022-04-12 17:08:52
- * @LastEditTime: 2022-05-16 11:35:47
+ * @LastEditTime: 2022-05-16 22:33:07
  * @FilePath: \flutter_easymusic\lib\pages\home_page.dart
  */
 
@@ -31,7 +31,7 @@ class HomePage extends StatelessWidget {
             delegate: UserSliverHeaderDelegate(
               scaffoldKey: scaffoldKey,
               title: '我的歌单',
-              collapsedHeight: 40,
+              collapsedHeight: 62,
               expandedHeight: 380,
               paddingTop: MediaQuery.of(context).padding.top,
             )),
@@ -282,7 +282,7 @@ class UserSliverHeaderDelegate extends SliverPersistentHeaderDelegate {
                         title,
                         style: TextStyle(
                           fontSize: 20,
-                          fontWeight: FontWeight.w500,
+                          fontWeight: FontWeight.bold,
                           color: makeStickyHeaderTextColor(shrinkOffset, false),
                         ),
                       ),
