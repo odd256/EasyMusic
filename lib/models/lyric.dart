@@ -1,17 +1,19 @@
 /*
  * @Creator: Odd
  * @Date: 2022-04-21 23:35:55
- * @LastEditTime: 2022-05-19 12:25:25
+ * @LastEditTime: 2022-05-20 00:53:59
  * @FilePath: \flutter_easymusic\lib\models\lyric.dart
  */
 class Lyric {
   Duration startTime;
   Duration endTime;
   String lyric;
+  double offset; //距离第一句歌词的偏移量
 
   Lyric(
       {this.startTime = Duration.zero,
       this.endTime = Duration.zero,
+      this.offset = 0,
       required this.lyric});
 
   static formatLyrics(String data) {

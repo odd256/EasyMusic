@@ -1,7 +1,7 @@
 /*
  * @Creator: Odd
  * @Date: 2022-04-21 02:24:08
- * @LastEditTime: 2022-05-20 00:10:05
+ * @LastEditTime: 2022-05-20 01:09:36
  * @FilePath: \flutter_easymusic\lib\pages\current_song_page.dart
  */
 import 'dart:developer';
@@ -240,9 +240,23 @@ class LyricPainter extends CustomPainter {
         .toList());
   }
 
+  //计算当前Y轴的偏移量
+  double calculateOffsetY() {
+    if (curLineIndex >= 0) {
+      double offset = 0;
+      for (int i = 0; i < curLineIndex; i++) {
+        // offset += lyricPaints[i].height + 10;
+      }
+      return offset;
+    }
+
+    return 0;
+  }
+
   @override
   void paint(Canvas canvas, Size size) {
-    double curLineHight = size.width / 2;
+    double middle = size.height / 2;
+    double curLineHight = 0;
     for (int i = 0; i < lyricPaints.length; i++) {
       if (curLineIndex == i) {
         lyricPaints[i].text = TextSpan(
@@ -253,15 +267,16 @@ class LyricPainter extends CustomPainter {
         lyricPaints[i].paint(
             canvas,
             Offset((size.width - lyricPaints[i].width) / 2,
-                curLineHight - 20 * curLineIndex));
+                curLineHight - lyrics[curLineIndex].offset + middle));
       } else {
         lyricPaints[i].layout(maxWidth: size.width);
         lyricPaints[i].paint(
             canvas,
             Offset((size.width - lyricPaints[i].width) / 2,
-                curLineHight - 20 * curLineIndex));
+                curLineHight - lyrics[curLineIndex].offset + middle));
       }
-      //最后更新一下行高
+      //最后更新一下行高和偏移量
+      lyrics[i].offset = curLineHight;
       curLineHight += lyricPaints[i].height + 10;
     }
   }
