@@ -1,19 +1,23 @@
 /*
  * @Creator: Odd
  * @Date: 2022-04-21 23:35:55
- * @LastEditTime: 2022-05-17 09:14:06
+ * @LastEditTime: 2022-05-19 12:25:25
  * @FilePath: \flutter_easymusic\lib\models\lyric.dart
  */
 class Lyric {
-  final Duration startTime;
-  final String lyric;
+  Duration startTime;
+  Duration endTime;
+  String lyric;
 
-  Lyric({required this.startTime, required this.lyric});
+  Lyric(
+      {this.startTime = Duration.zero,
+      this.endTime = Duration.zero,
+      required this.lyric});
 
   static formatLyrics(String data) {
     RegExp reg = RegExp(r'^\[\d{2}');
 
-    return data.split('\n').where((r) => reg.hasMatch(r)).map<Lyric>((line) {
+    var r =  data.split('\n').where((r) => reg.hasMatch(r)).map<Lyric>((line) {
       final st = line.substring(1, line.indexOf(']'));
       final lrc = line.substring(line.indexOf(']') + 1);
       int minuteNum = int.parse(st.substring(0, st.indexOf(':')));
@@ -27,5 +31,12 @@ class Lyric {
               milliseconds: millisecondNum),
           lyric: lrc);
     }).toList();
+
+    // 设置结束时间
+    for(int i=0; i<r.length-1; i++) {
+      r[i].endTime = r[i+1].startTime;
+    }
+    r[r.length-1].endTime = const Duration(days: 1);
+    return r;
   }
 }

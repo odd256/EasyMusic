@@ -1,7 +1,7 @@
 /*
  * @Creator: Odd
  * @Date: 2022-04-21 02:24:08
- * @LastEditTime: 2022-05-19 11:30:07
+ * @LastEditTime: 2022-05-20 00:10:05
  * @FilePath: \flutter_easymusic\lib\pages\current_song_page.dart
  */
 import 'dart:developer';
@@ -182,6 +182,19 @@ class CurrentSongPage extends StatelessWidget {
 class LyricView extends StatelessWidget {
   const LyricView({Key? key}) : super(key: key);
 
+  int findCurLineIndex(Duration curTime, lyrics) {
+    int idx = 0;
+    double offset = 0.5; //歌词的偏移值
+    for (int i = 0; i < lyrics.length; i++) {
+      if (curTime.inMilliseconds + offset >=
+              lyrics[i].startTime.inMilliseconds &&
+          curTime.inMilliseconds + offset <= lyrics[i].endTime.inMilliseconds) {
+        idx = i;
+      }
+    }
+    return idx;
+  }
+
   @override
   Widget build(BuildContext context) {
     return GetBuilder<AudioController>(
@@ -198,7 +211,9 @@ class LyricView extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             child: CustomPaint(
               size: MediaQuery.of(context).size,
-              painter: LyricPainter(_.lyrics),
+              painter: LyricPainter(
+                  lyrics: _.lyrics,
+                  curLineIndex: findCurLineIndex(_.progress.current, _.lyrics)),
             ),
           ),
         );
@@ -210,9 +225,11 @@ class LyricView extends StatelessWidget {
 class LyricPainter extends CustomPainter {
   List<Lyric> lyrics = []; // 歌词文本
 
+  int curLineIndex = -1; // 当前行
+
   List<TextPainter> lyricPaints = []; // 画笔
 
-  LyricPainter(this.lyrics) {
+  LyricPainter({required this.curLineIndex, required this.lyrics}) {
     lyricPaints.addAll(lyrics
         .map<TextPainter>((l) => TextPainter(
             text: TextSpan(
@@ -225,20 +242,32 @@ class LyricPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    log(size.height.toString());
-    double lineHight = 0;
+    double curLineHight = size.width / 2;
     for (int i = 0; i < lyricPaints.length; i++) {
-      lyricPaints[i].layout(maxWidth: size.width);
-      lyricPaints[i].paint(
-          canvas, Offset((size.width - lyricPaints[i].width) / 2, lineHight));
-
+      if (curLineIndex == i) {
+        lyricPaints[i].text = TextSpan(
+            text: lyrics[i].lyric,
+            style: const TextStyle(
+                color: Colors.blue, fontSize: 16, fontWeight: FontWeight.bold));
+        lyricPaints[i].layout(maxWidth: size.width);
+        lyricPaints[i].paint(
+            canvas,
+            Offset((size.width - lyricPaints[i].width) / 2,
+                curLineHight - 20 * curLineIndex));
+      } else {
+        lyricPaints[i].layout(maxWidth: size.width);
+        lyricPaints[i].paint(
+            canvas,
+            Offset((size.width - lyricPaints[i].width) / 2,
+                curLineHight - 20 * curLineIndex));
+      }
       //最后更新一下行高
-      lineHight += lyricPaints[i].height + 10;
+      curLineHight += lyricPaints[i].height + 10;
     }
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return true;
+  bool shouldRepaint(covariant LyricPainter oldDelegate) {
+    return oldDelegate.curLineIndex != curLineIndex;
   }
 }
