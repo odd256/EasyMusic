@@ -3,7 +3,7 @@
 /*
  * @Creator: Odd
  * @Date: 2022-04-13 21:57:27
- * @LastEditTime: 2022-05-16 23:52:20
+ * @LastEditTime: 2022-05-17 16:19:46
  * @FilePath: \flutter_easymusic\lib\pages\playlist_songs_page.dart
  */
 import 'package:flutter/material.dart';
@@ -200,17 +200,6 @@ class SongSliverListView extends StatelessWidget {
       padding: const EdgeInsets.only(left: 16),
       child: Row(
         children: [
-          SizedBox(
-            height: 50,
-            width: 50,
-            child: Center(
-              child: Text(
-                '${i + 1}',
-                style: const TextStyle(fontSize: 20),
-              ),
-            ),
-          ),
-          const SizedBox(width: 15),
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,

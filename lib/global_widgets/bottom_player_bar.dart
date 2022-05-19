@@ -1,7 +1,7 @@
 /*
  * @Creator: Odd
  * @Date: 2022-04-15 15:00:19
- * @LastEditTime: 2022-05-16 19:37:31
+ * @LastEditTime: 2022-05-17 16:16:14
  * @FilePath: \flutter_easymusic\lib\global_widgets\bottom_player_bar.dart
  */
 
@@ -83,7 +83,7 @@ class BottomPlayerBar extends StatelessWidget {
             color: Colors.blue,
             child: Container(
               padding: const EdgeInsets.all(10),
-              width: MediaQuery.of(context).size.width - 60,
+              width: MediaQuery.of(context).size.width - 70,
               height: 90,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,

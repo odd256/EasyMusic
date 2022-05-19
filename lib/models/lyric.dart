@@ -1,11 +1,9 @@
 /*
  * @Creator: Odd
  * @Date: 2022-04-21 23:35:55
- * @LastEditTime: 2022-04-22 00:25:03
+ * @LastEditTime: 2022-05-17 09:14:06
  * @FilePath: \flutter_easymusic\lib\models\lyric.dart
  */
-import 'dart:developer';
-
 class Lyric {
   final Duration startTime;
   final String lyric;
