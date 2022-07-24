@@ -3,9 +3,11 @@
 /*
  * @Creator: Odd
  * @Date: 2022-04-13 21:57:27
- * @LastEditTime: 2022-05-17 16:19:46
+ * @LastEditTime: 2022-07-25 02:42:48
  * @FilePath: \flutter_easymusic\lib\pages\playlist_songs_page.dart
  */
+import 'package:audio_service/audio_service.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easymusic/controllers/audio_controller.dart';
 import 'package:flutter_easymusic/controllers/playlist_songs_controller.dart';
@@ -55,7 +57,6 @@ class PlaylistSongsPage extends StatelessWidget {
         ),
         floatingActionButton: const BottomPlayerBar(),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-        // bottomNavigationBar: const BottomPlayerBar(),
       ),
     );
   }
@@ -72,10 +73,13 @@ class PlaylistHeader extends StatelessWidget {
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(10),
-              child: Image.network(
-                  playlistState.currentPlaylist.value.coverImgUrl,
-                  width: 150,
-                  height: 150),
+              child: CachedNetworkImage(
+                imageUrl: playlistState.currentPlaylist.value.coverImgUrl,
+                width: 150,
+                height: 150,
+                fit: BoxFit.cover,
+                placeholder: (_, __) => SizedBox(height: 150, width: 150),
+              ),
             ),
             const SizedBox(
               width: 20,
@@ -95,10 +99,12 @@ class PlaylistHeader extends StatelessWidget {
                   ),
                   Row(
                     children: [
-                      CircleAvatar(
-                        radius: 14,
-                        backgroundImage: NetworkImage(
-                          playlistState.currentPlaylist.value.creator.avatarUrl,
+                      ClipOval(
+                        child: CachedNetworkImage(
+                          width: 24,
+                          height: 24,
+                          imageUrl: playlistState
+                              .currentPlaylist.value.creator.avatarUrl,
                         ),
                       ),
                       const SizedBox(
@@ -179,15 +185,29 @@ class SongSliverListView extends StatelessWidget {
     final PlaylistSongsController psController =
         Get.find<PlaylistSongsController>();
     final PlaylistState playlistState = Get.find<PlaylistState>();
+final ah = Get.find<AudioHandler>();
 
+    int calculateCount() {
+      bool isQueued = ah.queue.value.isNotEmpty;
+      int s = 0;
+      if(psController.onLoad.value) {
+        return 7;
+      }
+      else if (isQueued) {
+        s = 2;
+      }
+      return playlistState.currentMediaItems.length + s;
+    }
     return Obx(() => SliverPrototypeExtentList(
           delegate: SliverChildBuilderDelegate(
               (c, i) => psController.onLoad.value
                   ? _buildShimmerListTile(context, i)
                   : _buildSongListTile(psController, playlistState, i),
-              childCount: psController.onLoad.value
-                  ? 7
-                  : playlistState.currentMediaItems.length + 2),
+              // childCount: psController.onLoad.value
+              //     ? 7
+              //     : playlistState.currentMediaItems.length + 2
+              childCount: calculateCount()
+                  ),
           prototypeItem: const ListTile(
             title: Text(''),
             subtitle: Text(''),

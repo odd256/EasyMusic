@@ -1,7 +1,7 @@
 /*
  * @Creator: Odd
  * @Date: 2022-04-12 17:01:31
- * @LastEditTime: 2022-04-21 02:25:03
+ * @LastEditTime: 2022-07-25 01:26:11
  * @FilePath: \flutter_easymusic\lib\pages\routes\app_pages.dart
  */
 import 'package:flutter_easymusic/controllers/playlist_controller.dart';
@@ -70,7 +70,7 @@ class SearchBinding implements Bindings {
 class SplashBinding implements Bindings {
   @override
   void dependencies() {
-    Get.lazyPut<UserController>(() => UserController());
+    // Get.lazyPut<UserController>(() => UserController());
   }
 }
 

@@ -1,7 +1,7 @@
 /*
  * @Creator: Odd
  * @Date: 2022-04-15 15:00:19
- * @LastEditTime: 2022-05-17 16:16:14
+ * @LastEditTime: 2022-07-25 02:44:48
  * @FilePath: \flutter_easymusic\lib\global_widgets\bottom_player_bar.dart
  */
 
@@ -76,7 +76,7 @@ class BottomPlayerBar extends StatelessWidget {
     return GetBuilder<AudioController>(
       init: AudioController(),
       builder: (_) {
-        return InkWell(
+        return ah.queue.value.isEmpty?Container():InkWell(
           onTap: () => Get.toNamed(AppRoutes.currentSong),
           child: Material(
             borderRadius: BorderRadius.circular(10),

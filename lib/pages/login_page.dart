@@ -1,7 +1,7 @@
 /*
  * @Creator: Odd
  * @Date: 2022-04-12 20:17:42
- * @LastEditTime: 2022-04-19 11:09:59
+ * @LastEditTime: 2022-07-25 01:24:42
  * @FilePath: \flutter_easymusic\lib\pages\login_page.dart
  */
 import 'package:flutter/material.dart';
@@ -14,13 +14,14 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final UserController _userController = Get.find<UserController>();
+
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
         centerTitle: true,
         title: const Text(
           '手机号登录',
-          style: TextStyle(color: Colors.black),
+          style: TextStyle(color: Colors.white),
         ),
       ),
       body: Obx(() => _userController.hasSend.value
@@ -31,10 +32,7 @@ class LoginPage extends StatelessWidget {
 }
 
 class LoginPhonePage extends StatelessWidget {
-
-  const LoginPhonePage(
-      {Key? key})
-      : super(key: key);
+  const LoginPhonePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -89,9 +87,7 @@ class LoginPhonePage extends StatelessWidget {
 }
 
 class CaptchaLoginPage extends StatelessWidget {
-  const CaptchaLoginPage(
-       {Key? key})
-      : super(key: key);
+  const CaptchaLoginPage({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     final UserController userController = Get.find<UserController>();
@@ -132,8 +128,7 @@ class CaptchaLoginPage extends StatelessWidget {
                         ),
                         TextButton(
                             onPressed: userController.ready2Send.value
-                                ? () => userController
-                                    .sendCaptcha()
+                                ? () => userController.sendCaptcha()
                                 : null,
                             child: Text(userController.ready2Send.value
                                 ? '重新发送'

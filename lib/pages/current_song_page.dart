@@ -1,126 +1,86 @@
 /*
  * @Creator: Odd
  * @Date: 2022-04-21 02:24:08
- * @LastEditTime: 2022-05-20 01:09:36
+ * @LastEditTime: 2022-07-25 02:55:05
  * @FilePath: \flutter_easymusic\lib\pages\current_song_page.dart
  */
-import 'dart:developer';
-
 import 'package:audio_service/audio_service.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easymusic/controllers/audio_controller.dart';
-import 'package:flutter_easymusic/global_widgets/bottom_player_bar.dart';
 import 'package:get/get.dart';
 
 import '../models/lyric.dart';
 
-class CurrentSongPage extends StatelessWidget {
+class CurrentSongPage extends StatefulWidget {
   const CurrentSongPage({Key? key}) : super(key: key);
 
   @override
+  State<CurrentSongPage> createState() => _CurrentSongPageState();
+}
+
+class _CurrentSongPageState extends State<CurrentSongPage> {
+  int curIndex = 0;
+
+  @override
   Widget build(BuildContext context) {
-    final audioHandler = Get.find<AudioHandler>();
-
     return Scaffold(
-      floatingActionButton: ElevatedButton.icon(
-          onPressed: () => {
-                Get.to(
-                  () => const LyricView(),
-                )
-              },
-          icon: const Icon(Icons.expand_more_rounded),
-          label: const Text('歌词')),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      body: GetBuilder<AudioController>(
-          init: Get.find<AudioController>(),
-          builder: (controller) {
-            final playbtn = controller.playButton == ButtonState.playing
-                ? Material(
-                    borderRadius: BorderRadius.circular(10),
-                    color: Colors.blue,
-                    child: InkWell(
-                      borderRadius: BorderRadius.circular(10),
-                      onTap: () => audioHandler.pause(),
-                      child: const SizedBox(
-                        height: 50,
-                        width: 50,
-                        child: Icon(
-                          Icons.pause_outlined,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  )
-                : Material(
-                    borderRadius: BorderRadius.circular(10),
-                    color: Colors.blue,
-                    child: InkWell(
-                      borderRadius: BorderRadius.circular(10),
-                      onTap: () => audioHandler.play(),
-                      child: const SizedBox(
-                        height: 50,
-                        width: 50,
-                        child: Icon(
-                          Icons.play_arrow_outlined,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  );
-
-            return SafeArea(
-                bottom: false,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        IconButton(
-                            onPressed: () => Get.back(),
-                            icon:
-                                const Icon(Icons.keyboard_arrow_down_rounded)),
-                        const Text(
-                          '当前播放',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        IconButton(
-                            onPressed: () {},
-                            icon: const Icon(Icons.more_vert_outlined)),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(14),
-                      child: Image.network(
-                          audioHandler.mediaItem.value?.artUri.toString() ??
-                              defaultImgUrl,
-                          height: MediaQuery.of(context).size.height * 0.45,
-                          width: MediaQuery.of(context).size.width * 0.7,
-                          fit: BoxFit.cover),
-                    ),
-                    const SizedBox(height: 20),
-                    _buildFunctionalBtn(context, audioHandler),
-                    const SizedBox(height: 20),
-                    _buildControllBtn(audioHandler, playbtn),
-                    const SizedBox(
-                      height: 90,
-                    ),
-                  ],
-                ));
-          }),
-      // borderRadius: const BorderRadius.vertical(
-      //   top: Radius.circular(14),
-      // ),
-    );
+        floatingActionButton: ElevatedButton.icon(
+            onPressed: () {
+              setState(() {
+                curIndex == 0 ? curIndex = 1 : curIndex = 0;
+              });
+            },
+            icon: Icon(curIndex == 0
+                ? Icons.expand_more_rounded
+                : Icons.expand_less_rounded),
+            label: Text(curIndex == 0 ? '歌词' : '返回')),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+        body: IndexedStack(
+          index: curIndex,
+          children: const [CurrentSongView(), LyricView()],
+        ));
   }
+}
 
-  _buildControllBtn(AudioHandler audioHandler, Material playbtn) {
+class CurrentSongView extends StatelessWidget {
+  const CurrentSongView({Key? key}) : super(key: key);
+
+  _buildControllBtn(AudioHandler audioHandler, AudioController ac) {
+    final playbtn = ac.playButton == ButtonState.playing
+        ? Material(
+            borderRadius: BorderRadius.circular(10),
+            color: Colors.blue,
+            child: InkWell(
+              borderRadius: BorderRadius.circular(10),
+              onTap: () => audioHandler.pause(),
+              child: const SizedBox(
+                height: 50,
+                width: 50,
+                child: Icon(
+                  Icons.pause_outlined,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          )
+        : Material(
+            borderRadius: BorderRadius.circular(10),
+            color: Colors.blue,
+            child: InkWell(
+              borderRadius: BorderRadius.circular(10),
+              onTap: () => audioHandler.play(),
+              child: const SizedBox(
+                height: 50,
+                width: 50,
+                child: Icon(
+                  Icons.play_arrow_outlined,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          );
+
     return IconTheme(
       data: const IconThemeData(size: 30),
       child: Row(
@@ -154,7 +114,7 @@ class CurrentSongPage extends StatelessWidget {
               alignment: Alignment.center,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
                     audioHandler.mediaItem.value?.title ?? '',
@@ -177,11 +137,94 @@ class CurrentSongPage extends StatelessWidget {
       ),
     );
   }
+
+  @override
+  Widget build(BuildContext context) {
+    final audioHandler = Get.find<AudioHandler>();
+    final audioController = Get.find<AudioController>();
+
+    return GetBuilder<AudioController>(
+        init: Get.find<AudioController>(),
+        builder: (controller) {
+          return SafeArea(
+              bottom: false,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      IconButton(
+                          onPressed: () => Get.back(),
+                          icon: const Icon(Icons.keyboard_arrow_down_rounded)),
+                      const Text(
+                        '当前播放',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      IconButton(
+                          onPressed: () {},
+                          icon: const Icon(Icons.more_vert_outlined)),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  _buildSongCover(context, audioHandler, audioController),
+                  const SizedBox(height: 20),
+                  _buildFunctionalBtn(context, audioHandler),
+                  const SizedBox(height: 20),
+                  _buildControllBtn(audioHandler, audioController),
+                  const SizedBox(
+                    height: 90,
+                  ),
+                ],
+              ));
+        });
+  }
+
+  Container _buildSongCover(BuildContext context, AudioHandler audioHandler,
+      AudioController audioController) {
+    final coverHeight = MediaQuery.of(context).size.height * 0.45;
+    final coverWidth = MediaQuery.of(context).size.width * 0.7;
+    return Container(
+      height: coverHeight,
+      width: coverWidth,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(14),
+        boxShadow: const [
+          BoxShadow(
+              color: Color.fromARGB(153, 0, 0, 0),
+              offset: Offset(2.5, 2.5),
+              blurRadius: 2.0,
+              spreadRadius: 1.0),
+          // BoxShadow(color: Colors.grey, offset: Offset(4.0, 4.0)),
+          // BoxShadow(color: Colors.white, offset: Offset(0.0, 0.0)),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(12),
+        child: CachedNetworkImage(
+          fit: BoxFit.fill,
+          imageUrl: audioHandler.mediaItem.value?.artUri.toString() ?? '',
+          placeholder: (_, __) => Container(
+            width: double.infinity,
+            height: double.infinity,
+            color: Colors.white,
+          ),
+          errorWidget: (_, __, ___) => const Icon(Icons.error_outline_rounded),
+        ),
+      ),
+    );
+  }
 }
 
 class LyricView extends StatelessWidget {
   const LyricView({Key? key}) : super(key: key);
 
+  //找到当前行的Index，为做效果做准备
   int findCurLineIndex(Duration curTime, lyrics) {
     int idx = 0;
     double offset = 0.5; //歌词的偏移值
@@ -201,22 +244,19 @@ class LyricView extends StatelessWidget {
       init: AudioController(),
       initState: (_) {},
       builder: (_) {
-        return Scaffold(
-          appBar: AppBar(
-            title: const Text('歌词'),
-            centerTitle: true,
-            elevation: 0,
-          ),
-          body: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            child: CustomPaint(
+        return Container(
+            // padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            child: Column(
+              children: [
+                CustomPaint(
               size: MediaQuery.of(context).size,
               painter: LyricPainter(
                   lyrics: _.lyrics,
                   curLineIndex: findCurLineIndex(_.progress.current, _.lyrics)),
             ),
-          ),
-        );
+              ],
+            )
+          );
       },
     );
   }
@@ -241,24 +281,26 @@ class LyricPainter extends CustomPainter {
   }
 
   //计算当前Y轴的偏移量
-  double calculateOffsetY() {
-    if (curLineIndex >= 0) {
-      double offset = 0;
-      for (int i = 0; i < curLineIndex; i++) {
-        // offset += lyricPaints[i].height + 10;
-      }
-      return offset;
-    }
+  // double calculateOffsetY() {
+  //   if (curLineIndex >= 0) {
+  //     double offset = 0;
+  //     for (int i = 0; i < curLineIndex; i++) {
+  //       // offset += lyricPaints[i].height + 10;
+  //     }
+  //     return offset;
+  //   }
 
-    return 0;
-  }
+  //   return 0;
+  // }
 
   @override
   void paint(Canvas canvas, Size size) {
-    double middle = size.height / 2;
+    double middle = size.height *(1/ 4);
     double curLineHight = 0;
     for (int i = 0; i < lyricPaints.length; i++) {
+      
       if (curLineIndex == i) {
+        //渲染当前行
         lyricPaints[i].text = TextSpan(
             text: lyrics[i].lyric,
             style: const TextStyle(
@@ -269,6 +311,7 @@ class LyricPainter extends CustomPainter {
             Offset((size.width - lyricPaints[i].width) / 2,
                 curLineHight - lyrics[curLineIndex].offset + middle));
       } else {
+        //渲染其他行
         lyricPaints[i].layout(maxWidth: size.width);
         lyricPaints[i].paint(
             canvas,

@@ -39,12 +39,14 @@ dependencies:
   audio_session: ^0.1.6+1 # 定义音频的含义，音效/音乐/提醒...
   just_audio: ^0.9.20 # 音乐播放器
 
-  get: ^4.6.1 # 神器！
-  dio: ^4.0.4 # 网络请求
+  get: ^4.6.5 # 神器！
+  dio: ^4.0.6 # 网络请求
   get_storage: ^2.0.3 # 持久化
   audio_video_progress_bar: ^0.5.0
   sliding_up_panel: ^2.0.0+1
   shimmer: ^2.0.0 # 占位图
+  cached_network_image: ^3.2.1 # 图片缓存
+  fluttertoast: ^8.0.9 # toast提示
 
 dev_dependencies:
   flutter_test:

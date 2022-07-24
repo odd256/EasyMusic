@@ -1,10 +1,14 @@
+// ignore_for_file: prefer_const_constructors
+
 /*
  * @Creator: Odd
  * @Date: 2022-04-12 17:08:52
- * @LastEditTime: 2022-05-17 09:14:21
+ * @LastEditTime: 2022-07-25 02:43:43
  * @FilePath: \flutter_easymusic\lib\pages\home_page.dart
  */
 
+import 'package:audio_service/audio_service.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easymusic/controllers/playlist_controller.dart';
@@ -14,6 +18,7 @@ import 'package:flutter_easymusic/models/playlist.dart';
 import 'package:flutter_easymusic/pages/routes/app_routes.dart';
 import 'package:flutter_easymusic/services/playlist_state.dart';
 import 'package:flutter_easymusic/services/user_state.dart';
+import 'package:flutter_easymusic/utils/msg_util.dart';
 import 'package:get/get.dart';
 
 class HomePage extends StatelessWidget {
@@ -50,16 +55,7 @@ class HomePage extends StatelessWidget {
                 const Duration(seconds: 1)) {
           //间隔超过一秒重新计时
           _lastPressedAt = DateTime.now();
-          Get.snackbar(
-            '提示', // title
-            '再按一次退出应用', // message
-            icon: const Icon(Icons.sentiment_satisfied_rounded),
-            shouldIconPulse: true,
-            snackPosition: SnackPosition.BOTTOM,
-            barBlur: 20,
-            isDismissible: true,
-            duration: const Duration(seconds: 3),
-          );
+          MsgUtil.notice('再按一次退出应用');
           return false;
         }
         return true;
@@ -233,7 +229,10 @@ class UserSliverHeaderDelegate extends SliverPersistentHeaderDelegate {
       child: Stack(
         fit: StackFit.expand,
         children: <Widget>[
-          Image.network(userState.user.value.backgroundUrl, fit: BoxFit.cover),
+          CachedNetworkImage(
+            imageUrl: userState.user.value.backgroundUrl,
+            fit: BoxFit.cover,
+          ),
           Positioned(
             left: 0,
             top: maxExtent / 2,
@@ -333,11 +332,19 @@ class PlaylistItemListWidget extends StatelessWidget {
         playlist.name,
         overflow: TextOverflow.ellipsis,
       ),
-      leading: Image.network(
-        playlist.coverImgUrl,
+      leading: CachedNetworkImage(
+        imageUrl: playlist.coverImgUrl,
         width: 55,
         height: 55,
-        fit: BoxFit.fill,
+        placeholder: (context, url) => SizedBox(height: 55, width: 55),
+        errorWidget: (context, url, error) => const AspectRatio(
+          aspectRatio: 1 / 1,
+          child: SizedBox(
+            width: 55,
+            height: 55,
+            child: Icon(Icons.error),
+          ),
+        ),
       ),
       subtitle: Text('${playlist.trackCount} 首'),
     );
@@ -378,14 +385,30 @@ class PlaylistItemListWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final playlistController = Get.find<PlaylistController>();
+    final ah = Get.find<AudioHandler>();
+
+    int calculateCount() {
+      bool isQueued = ah.queue.value.isNotEmpty;
+      int s = 0;
+      if (playlistController.onLoad.value) {
+        return 5;
+      }
+      else if (isQueued) {
+        s = 2;
+      }
+      return playlistController.playlists.length + s;
+    }
+
     return Obx(() => SliverPrototypeExtentList(
           delegate: SliverChildBuilderDelegate(
               (c, i) => playlistController.onLoad.value
                   ? _buildShimmerListTile(context)
                   : _buildPlaylistListTile(playlistController, i),
-              childCount: playlistController.onLoad.value
-                  ? 5
-                  : playlistController.playlists.length + 2),
+
+              // childCount: playlistController.onLoad.value
+              //     ? 5
+              //     : playlistController.playlists.length + 2
+              childCount: calculateCount()),
           prototypeItem: const ListTile(
             title: Text(''),
             subtitle: Text(''),
