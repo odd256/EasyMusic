@@ -47,6 +47,7 @@ dependencies:
   shimmer: ^2.0.0 # 占位图
   cached_network_image: ^3.2.1 # 图片缓存
   fluttertoast: ^8.0.9 # toast提示
+  easy_refresh: ^3.0.2+2 # 刷新工具
 
 dev_dependencies:
   flutter_test:

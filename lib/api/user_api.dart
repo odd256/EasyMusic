@@ -1,8 +1,8 @@
 /*
  * @Creator: Odd
  * @Date: 2022-04-12 16:37:26
- * @LastEditTime: 2022-04-13 14:10:50
- * @FilePath: \flutter_easymusic\lib\api\user_api.dart
+ * @LastEditTime: 2022-08-01 01:18:44
+ * @FilePath: \EasyMusic\lib\api\user_api.dart
  */
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
@@ -21,8 +21,14 @@ class UserApi {
     return res.data;
   }
 
+  //查看登陆状态
   static checkLoginStatus(String cookie) async {
     var res = await dio.get('/login/status?cookie=$cookie');
+    return res.data;
+  }
+
+  static logout() async {
+    var res = await dio.get('/logout');
     return res.data;
   }
 }

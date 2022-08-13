@@ -3,8 +3,8 @@
 /*
  * @Creator: Odd
  * @Date: 2022-04-12 17:08:52
- * @LastEditTime: 2022-07-25 02:43:43
- * @FilePath: \flutter_easymusic\lib\pages\home_page.dart
+ * @LastEditTime: 2022-08-01 01:08:14
+ * @FilePath: \EasyMusic\lib\pages\home_page.dart
  */
 
 import 'package:audio_service/audio_service.dart';
@@ -12,6 +12,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easymusic/controllers/playlist_controller.dart';
+import 'package:flutter_easymusic/controllers/user_controller.dart';
 import 'package:flutter_easymusic/global_widgets/bottom_player_bar.dart';
 import 'package:flutter_easymusic/global_widgets/custom_shimmer.dart';
 import 'package:flutter_easymusic/models/playlist.dart';
@@ -84,6 +85,7 @@ class HomeDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final usercontroller = Get.find<UserController>();
     return Drawer(
       backgroundColor: const Color(0xFFF5F5F5),
       child: ListView(
@@ -104,7 +106,7 @@ class HomeDrawer extends StatelessWidget {
                     Get.toNamed(AppRoutes.login);
                   }),
                   _buildListTile('登出', Icons.logout_rounded,
-                      onTapAction: () {}),
+                      onTapAction: ()=>usercontroller.logout()),
                 ],
               ),
             ),
@@ -288,7 +290,7 @@ class UserSliverHeaderDelegate extends SliverPersistentHeaderDelegate {
                           Icons.search_rounded,
                           color: makeStickyHeaderTextColor(shrinkOffset, true),
                         ),
-                        onPressed: () {},
+                        onPressed: () => Get.toNamed('/search'),
                       ),
                     ],
                   ),

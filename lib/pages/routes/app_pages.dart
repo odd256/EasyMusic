@@ -1,11 +1,12 @@
 /*
  * @Creator: Odd
  * @Date: 2022-04-12 17:01:31
- * @LastEditTime: 2022-07-25 01:26:11
- * @FilePath: \flutter_easymusic\lib\pages\routes\app_pages.dart
+ * @LastEditTime: 2022-07-26 13:26:42
+ * @FilePath: \EasyMusic\lib\pages\routes\app_pages.dart
  */
 import 'package:flutter_easymusic/controllers/playlist_controller.dart';
 import 'package:flutter_easymusic/controllers/playlist_songs_controller.dart';
+import 'package:flutter_easymusic/controllers/search_controller.dart';
 import 'package:flutter_easymusic/controllers/user_controller.dart';
 import 'package:flutter_easymusic/pages/current_song_page.dart';
 import 'package:flutter_easymusic/pages/home_page.dart';
@@ -64,7 +65,9 @@ class LoginPageBinding implements Bindings {
 
 class SearchBinding implements Bindings {
   @override
-  void dependencies() {}
+  void dependencies() {
+    Get.lazyPut<SearchController>(() => SearchController());
+  }
 }
 
 class SplashBinding implements Bindings {

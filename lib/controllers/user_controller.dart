@@ -1,8 +1,8 @@
 /*
  * @Creator: Odd
  * @Date: 2022-04-12 16:31:35
- * @LastEditTime: 2022-07-25 01:32:53
- * @FilePath: \flutter_easymusic\lib\controllers\user_controller.dart
+ * @LastEditTime: 2022-08-01 01:26:19
+ * @FilePath: \EasyMusic\lib\controllers\user_controller.dart
  */
 import 'dart:async';
 import 'dart:developer';
@@ -10,7 +10,6 @@ import 'dart:developer';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_easymusic/api/user_api.dart';
 import 'package:flutter_easymusic/models/user.dart';
-import 'package:flutter_easymusic/pages/routes/app_routes.dart';
 import 'package:flutter_easymusic/services/user_state.dart';
 import 'package:flutter_easymusic/utils/msg_util.dart';
 import 'package:get/get.dart';
@@ -85,6 +84,20 @@ class UserController extends GetxController {
     if (res['code'] == 400) {
       MsgUtil.notice(res['message']);
     }
+  }
+
+  Future<void> logout() async {
+    final box = GetStorage();
+    box.remove('user').then((value) async {
+      var data = await UserApi.logout();
+      if (data['code'] == 200) {
+        userState.isLogin.value = false;
+        MsgUtil.success("退出成功！");
+        Get.offAllNamed('/login');
+      } else {
+        MsgUtil.warn("发生了错误，code:${data['code']}");
+      }
+    });
   }
 
   @override
