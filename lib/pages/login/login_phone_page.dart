@@ -1,15 +1,15 @@
 /*
  * @Creator: Odd
  * @Date: 2022-04-12 20:17:42
- * @LastEditTime: 2022-07-25 01:24:42
- * @FilePath: \flutter_easymusic\lib\pages\login_page.dart
+ * @LastEditTime: 2022-08-13 23:18:29
+ * @FilePath: \EasyMusic\lib\pages\login\login_page.dart
  */
 import 'package:flutter/material.dart';
 import 'package:flutter_easymusic/controllers/user_controller.dart';
 import 'package:get/get.dart';
 
-class LoginPage extends StatelessWidget {
-  const LoginPage({Key? key}) : super(key: key);
+class LoginPhonePage extends StatelessWidget {
+  const LoginPhonePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -26,13 +26,13 @@ class LoginPage extends StatelessWidget {
       ),
       body: Obx(() => _userController.hasSend.value
           ? const CaptchaLoginPage()
-          : const LoginPhonePage()),
+          : const LoginPhoneNumPage()),
     );
   }
 }
 
-class LoginPhonePage extends StatelessWidget {
-  const LoginPhonePage({Key? key}) : super(key: key);
+class LoginPhoneNumPage extends StatelessWidget {
+  const LoginPhoneNumPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

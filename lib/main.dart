@@ -1,13 +1,12 @@
 /*
  * @Creator: Odd
  * @Date: 2022-04-11 18:07:24
- * @LastEditTime: 2022-07-27 02:55:37
+ * @LastEditTime: 2022-08-14 00:00:42
  * @FilePath: \EasyMusic\lib\main.dart
  */
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easymusic/controllers/bindings/controller_bindings.dart';

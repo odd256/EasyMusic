@@ -13,7 +13,7 @@ import 'package:flutter_easymusic/services/user_state.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
-import '../utils/msg_util.dart';
+import '../../utils/msg_util.dart';
 
 ///闪屏页
 class SplashPage extends StatelessWidget {

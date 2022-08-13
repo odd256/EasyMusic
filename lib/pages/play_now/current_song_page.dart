@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easymusic/controllers/audio_controller.dart';
 import 'package:get/get.dart';
 
-import '../models/lyric.dart';
+import '../../models/lyric.dart';
 
 class CurrentSongPage extends StatefulWidget {
   const CurrentSongPage({Key? key}) : super(key: key);

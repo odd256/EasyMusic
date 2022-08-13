@@ -1,7 +1,7 @@
 /*
  * @Creator: Odd
  * @Date: 2022-04-12 16:31:35
- * @LastEditTime: 2022-08-01 01:26:19
+ * @LastEditTime: 2022-08-14 00:48:08
  * @FilePath: \EasyMusic\lib\controllers\user_controller.dart
  */
 import 'dart:async';
@@ -28,6 +28,8 @@ class UserController extends GetxController {
   final cc = TextEditingController(); // captcha controller
 
   final box = GetStorage();
+
+  
 
   @override
   void onInit() {
@@ -86,6 +88,7 @@ class UserController extends GetxController {
     }
   }
 
+  //退出登录
   Future<void> logout() async {
     final box = GetStorage();
     box.remove('user').then((value) async {
@@ -99,6 +102,11 @@ class UserController extends GetxController {
       }
     });
   }
+
+  
+  
+
+  
 
   @override
   void onClose() {
