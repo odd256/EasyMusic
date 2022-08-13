@@ -1,8 +1,8 @@
 /*
  * @Creator: Odd
  * @Date: 2022-04-13 22:33:52
- * @LastEditTime: 2022-04-20 16:22:15
- * @FilePath: \flutter_easymusic\lib\controllers\playlist_songs_controller.dart
+ * @LastEditTime: 2022-08-14 02:51:23
+ * @FilePath: \EasyMusic\lib\controllers\playlist_songs_controller.dart
  */
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter_easymusic/api/song_api.dart';
@@ -15,9 +15,6 @@ import 'package:flutter_easymusic/models/song.dart';
 import 'package:flutter_easymusic/services/playlist_state.dart';
 import 'package:flutter_easymusic/services/user_state.dart';
 import 'package:get/get.dart';
-
-const String defaultImgUrl =
-    'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Finews.gtimg.com%2Fnewsapp_bt%2F0%2F13633347286%2F1000.jpg&refer=http%3A%2F%2Finews.gtimg.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1652722376&t=dfc48d0e5d3cdf81ad0075013f89d710';
 
 class PlaylistSongsController extends GetxController {
   final audioController = Get.find<AudioController>();
@@ -33,8 +30,8 @@ class PlaylistSongsController extends GetxController {
   }
 
   void resetPlaylistState() {
-    playlistState.currentPlaylist.value = Playlist(0, defaultImgUrl, '', 0,
-        Creator(userId: 0, nickname: '', avatarUrl: defaultImgUrl));
+    playlistState.currentPlaylist.value = Playlist(0, '', '', 0,
+        Creator(userId: 0, nickname: '', avatarUrl: ''));
     playlistState.currentMediaItems.value = List<MediaItem>.empty();
   }
 
@@ -57,7 +54,7 @@ class PlaylistSongsController extends GetxController {
           title: s.name,
           album: s.album?.name,
           artist: ar.map((v) => v.name).join('/'),
-          artUri: Uri.parse(s.album?.picUrl ?? defaultImgUrl),
+          artUri: Uri.parse(s.album?.picUrl ?? ''),
           extras: {
             'url': 'https://music.163.com/song/media/outer/url?id=${s.id}.mp3'
           });

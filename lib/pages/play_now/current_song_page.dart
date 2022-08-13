@@ -1,9 +1,11 @@
 /*
  * @Creator: Odd
  * @Date: 2022-04-21 02:24:08
- * @LastEditTime: 2022-07-25 02:55:05
- * @FilePath: \flutter_easymusic\lib\pages\current_song_page.dart
+ * @LastEditTime: 2022-08-14 03:09:50
+ * @FilePath: \EasyMusic\lib\pages\play_now\current_song_page.dart
  */
+import 'dart:ui';
+
 import 'package:audio_service/audio_service.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -148,40 +150,62 @@ class CurrentSongView extends StatelessWidget {
         builder: (controller) {
           return SafeArea(
               bottom: false,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      IconButton(
-                          onPressed: () => Get.back(),
-                          icon: const Icon(Icons.keyboard_arrow_down_rounded)),
-                      const Text(
-                        '当前播放',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
+              child: Stack(children: [
+                CachedNetworkImage(
+                  fit: BoxFit.cover,
+                  height: double.infinity,
+                  fadeInDuration: const Duration(),
+                  fadeOutDuration: const Duration(),
+                  width: double.infinity,
+                  imageUrl:
+                      audioHandler.mediaItem.value?.artUri.toString() ?? '',
+                  errorWidget: (_, __, ___) =>
+                      const Icon(Icons.error_outline_rounded),
+                ),
+                BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 30.0, sigmaY: 30.0),
+                  child: Opacity(
+                      opacity: 0.3,
+                      child: Container(
+                        color: Colors.white,
+                      )),
+                ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        IconButton(
+                            onPressed: () => Get.back(),
+                            icon:
+                                const Icon(Icons.keyboard_arrow_down_rounded)),
+                        const Text(
+                          '当前播放',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                      IconButton(
-                          onPressed: () {},
-                          icon: const Icon(Icons.more_vert_outlined)),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  _buildSongCover(context, audioHandler, audioController),
-                  const SizedBox(height: 20),
-                  _buildFunctionalBtn(context, audioHandler),
-                  const SizedBox(height: 20),
-                  _buildControllBtn(audioHandler, audioController),
-                  const SizedBox(
-                    height: 90,
-                  ),
-                ],
-              ));
+                        IconButton(
+                            onPressed: () {},
+                            icon: const Icon(Icons.more_vert_outlined)),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    _buildSongCover(context, audioHandler, audioController),
+                    const SizedBox(height: 20),
+                    _buildFunctionalBtn(context, audioHandler),
+                    const SizedBox(height: 20),
+                    _buildControllBtn(audioHandler, audioController),
+                    const SizedBox(
+                      height: 90,
+                    ),
+                  ],
+                ),
+              ]));
         });
   }
 
@@ -196,9 +220,9 @@ class CurrentSongView extends StatelessWidget {
         borderRadius: BorderRadius.circular(14),
         boxShadow: const [
           BoxShadow(
-              color: Color.fromARGB(153, 0, 0, 0),
-              offset: Offset(2.5, 2.5),
-              blurRadius: 2.0,
+              color: Color.fromARGB(153, 122, 122, 122),
+              offset: Offset(1.5, 1.5),
+              blurRadius: 1.0,
               spreadRadius: 1.0),
           // BoxShadow(color: Colors.grey, offset: Offset(4.0, 4.0)),
           // BoxShadow(color: Colors.white, offset: Offset(0.0, 0.0)),
@@ -244,19 +268,16 @@ class LyricView extends StatelessWidget {
       init: AudioController(),
       initState: (_) {},
       builder: (_) {
-        return Container(
-            // padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            child: Column(
-              children: [
-                CustomPaint(
+        return Column(
+          children: [
+            CustomPaint(
               size: MediaQuery.of(context).size,
               painter: LyricPainter(
                   lyrics: _.lyrics,
                   curLineIndex: findCurLineIndex(_.progress.current, _.lyrics)),
             ),
-              ],
-            )
-          );
+          ],
+        );
       },
     );
   }
@@ -295,10 +316,9 @@ class LyricPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    double middle = size.height *(1/ 4);
+    double middle = size.height * (1 / 4);
     double curLineHight = 0;
     for (int i = 0; i < lyricPaints.length; i++) {
-      
       if (curLineIndex == i) {
         //渲染当前行
         lyricPaints[i].text = TextSpan(

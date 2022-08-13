@@ -3,8 +3,8 @@
 /*
  * @Creator: Odd
  * @Date: 2022-04-13 21:57:27
- * @LastEditTime: 2022-07-25 02:42:48
- * @FilePath: \flutter_easymusic\lib\pages\playlist_songs_page.dart
+ * @LastEditTime: 2022-08-14 03:05:11
+ * @FilePath: \EasyMusic\lib\pages\playlist\playlist_songs_page.dart
  */
 import 'package:audio_service/audio_service.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -74,6 +74,10 @@ class PlaylistHeader extends StatelessWidget {
             ClipRRect(
               borderRadius: BorderRadius.circular(10),
               child: CachedNetworkImage(
+                errorWidget: (context, url, error) => Container(
+                  margin: EdgeInsets.all(40),
+                  child: CircularProgressIndicator(strokeWidth: 6,),
+                ),
                 imageUrl: playlistState.currentPlaylist.value.coverImgUrl,
                 width: 150,
                 height: 150,
@@ -101,6 +105,8 @@ class PlaylistHeader extends StatelessWidget {
                     children: [
                       ClipOval(
                         child: CachedNetworkImage(
+                          errorWidget: (context, url, error) =>
+                              CircularProgressIndicator(),
                           width: 24,
                           height: 24,
                           imageUrl: playlistState
@@ -185,19 +191,19 @@ class SongSliverListView extends StatelessWidget {
     final PlaylistSongsController psController =
         Get.find<PlaylistSongsController>();
     final PlaylistState playlistState = Get.find<PlaylistState>();
-final ah = Get.find<AudioHandler>();
+    final ah = Get.find<AudioHandler>();
 
     int calculateCount() {
       bool isQueued = ah.queue.value.isNotEmpty;
       int s = 0;
-      if(psController.onLoad.value) {
+      if (psController.onLoad.value) {
         return 7;
-      }
-      else if (isQueued) {
+      } else if (isQueued) {
         s = 2;
       }
       return playlistState.currentMediaItems.length + s;
     }
+
     return Obx(() => SliverPrototypeExtentList(
           delegate: SliverChildBuilderDelegate(
               (c, i) => psController.onLoad.value
@@ -206,8 +212,7 @@ final ah = Get.find<AudioHandler>();
               // childCount: psController.onLoad.value
               //     ? 7
               //     : playlistState.currentMediaItems.length + 2
-              childCount: calculateCount()
-                  ),
+              childCount: calculateCount()),
           prototypeItem: const ListTile(
             title: Text(''),
             subtitle: Text(''),
