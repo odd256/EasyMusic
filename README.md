@@ -4,7 +4,8 @@
  * @LastEditTime: 2022-06-18 23:59:44
  * @FilePath: \flutter_easymusic\README.md
 -->
-# EasyMusic 简单音乐 （目前仍在更新中...）
+# 由于vercel被墙，网易云api无法正常使用，项目无法继续，因此暂停更新！！！
+# EasyMusic 简单音乐
 
 - 项目是个[flutter](https://flutter.dev) 开发的音乐播放器
 - 目前是个:poop:山，第一次做比较大的开发，还在不断填坑中，见谅~
